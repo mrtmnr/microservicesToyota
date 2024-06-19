@@ -1,7 +1,8 @@
 package com.toyota.authservice.Security.Services;
 
-import com.example.toyotamono.Entity.User;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.toyota.authservice.Entity.User;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,6 +1,7 @@
 package com.toyota.authservice.Security.Services;
-import com.example.toyotamono.Entity.User;
-import com.example.toyotamono.Repository.UserRepository;
+
+import com.toyota.authservice.Entity.User;
+import com.toyota.authservice.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

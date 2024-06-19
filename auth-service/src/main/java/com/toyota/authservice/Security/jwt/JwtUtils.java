@@ -1,6 +1,7 @@
 package com.toyota.authservice.Security.jwt;
 
 
+import com.toyota.authservice.Security.Services.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -33,8 +34,6 @@ public class JwtUtils {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
-        } catch (SignatureException e){
-            System.out.println("Error: Invalid JWT signature: " + e.getMessage());
         } catch (MalformedJwtException e) {
             System.out.println("Error: Invalid JWT token: " + e.getMessage());
         } catch (ExpiredJwtException e){

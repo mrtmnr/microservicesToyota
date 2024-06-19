@@ -1,7 +1,8 @@
 package com.toyota.authservice.Security;
-import com.example.toyotamono.Security.Services.UserDetailsServiceImpl;
-import com.example.toyotamono.Security.jwt.AuthEntryPointJwt;
-import com.example.toyotamono.Security.jwt.AuthTokenFilter;
+
+import com.toyota.authservice.Security.Services.UserDetailsServiceImpl;
+import com.toyota.authservice.Security.jwt.AuthEntryPointJwt;
+import com.toyota.authservice.Security.jwt.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
