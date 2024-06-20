@@ -55,8 +55,8 @@ public class WebSecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/signin/**").permitAll()
-                            .requestMatchers("/signup/**").permitAll()
+                    auth.requestMatchers("auth/signin/**").permitAll()
+                            .requestMatchers("auth/signup/**").permitAll()
                             .anyRequest().authenticated();
                 })
                 .httpBasic(Customizer.withDefaults());
