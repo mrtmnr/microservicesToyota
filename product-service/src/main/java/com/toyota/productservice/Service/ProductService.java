@@ -11,6 +11,8 @@ import java.util.Optional;
 
 
 public interface ProductService {
+
+    public ProductResponse getProductById(int id);
     List<Product>findAll();
 
     Product findProductByTitle(String title);

@@ -1,8 +1,10 @@
 package com.toyota.productservice.Service;
 
 
+import com.toyota.productservice.DTOs.CampaignDTO;
 import com.toyota.productservice.DTOs.ProductRequest;
 import com.toyota.productservice.DTOs.ProductResponse;
+import com.toyota.productservice.DTOs.ProductWithCampaignDTO;
 import com.toyota.productservice.Entity.Campaign;
 import com.toyota.productservice.Entity.Category;
 import com.toyota.productservice.Entity.Product;
@@ -34,6 +36,22 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> findAll() {
         return productRepository.findAll();
     }
+
+
+    @Override
+    public ProductResponse getProductById(int id) {
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalProduct.isEmpty()){
+            throw new RuntimeException("product not found with given id: "+id);
+        }
+
+        Product product=optionalProduct.get();
+        return mapToProductResponse(product);
+
+    }
+
+
+
 
     @Override
     public Product findProductByTitle(String title) {
@@ -97,7 +115,7 @@ public class ProductServiceImpl implements ProductService {
             productList=productRepository.findAll();
         }
 
-        return productList.stream().map(this::mapToproductResponse).toList();
+        return productList.stream().map(this::mapToProductResponse).toList();
 
     }
 
@@ -121,7 +139,7 @@ public class ProductServiceImpl implements ProductService {
         return "product added !";
     }
 
-    private ProductResponse mapToproductResponse(Product product) {
+    private ProductResponse mapToProductResponse(Product product) {
 
         String campaignName=null;
 
@@ -137,6 +155,34 @@ public class ProductServiceImpl implements ProductService {
                 .price(product.getPrice())
                 .title(product.getTitle())
                 .campaignName(campaignName)
+                .categoryName(product.getCategory().getTitle())
+                .build();
+    }
+
+
+    private ProductWithCampaignDTO mapToProductWithCampaignDTO(Product product) {
+
+        CampaignDTO campaignDTO=null;
+
+        Optional<Campaign>optionalCampaign=Optional.ofNullable(product.getCampaign());
+
+        if (optionalCampaign.isPresent()){
+            Campaign campaign=optionalCampaign.get();
+            campaignDTO=CampaignDTO.builder()
+                    .id(campaign.getId())
+                    .title(campaign.getTitle())
+                    .discountPercentage(campaign.getDiscountPercentage())
+                    .isOneFreeActive(campaign.isOneFreeActive())
+                    .isPercentageActive(campaign.isPercentageActive())
+                    .build();
+        }
+
+        return ProductWithCampaignDTO.builder()
+                .id(product.getId())
+                .stock(product.getStock())
+                .price(product.getPrice())
+                .title(product.getTitle())
+                .campaignDTO(campaignDTO)
                 .categoryName(product.getCategory().getTitle())
                 .build();
     }
