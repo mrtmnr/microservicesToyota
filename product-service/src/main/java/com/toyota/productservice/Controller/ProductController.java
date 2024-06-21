@@ -3,6 +3,7 @@ package com.toyota.productservice.Controller;
 
 import com.toyota.productservice.DTOs.ProductRequest;
 import com.toyota.productservice.DTOs.ProductResponse;
+import com.toyota.productservice.DTOs.ProductWithCampaignDTO;
 import com.toyota.productservice.Entity.Product;
 import com.toyota.productservice.Service.ProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -83,7 +84,7 @@ public class ProductController {
     }
 
     @GetMapping("/get/{id}")
-    public ProductResponse getProductById(@PathVariable int id){
+    public ProductWithCampaignDTO getProductById(@PathVariable int id){
 
         return productService.getProductById(id);
 

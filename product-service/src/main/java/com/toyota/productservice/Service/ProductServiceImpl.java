@@ -39,14 +39,14 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public ProductResponse getProductById(int id) {
+    public ProductWithCampaignDTO getProductById(int id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isEmpty()){
             throw new RuntimeException("product not found with given id: "+id);
         }
 
         Product product=optionalProduct.get();
-        return mapToProductResponse(product);
+        return mapToProductWithCampaignDTO(product);
 
     }
 

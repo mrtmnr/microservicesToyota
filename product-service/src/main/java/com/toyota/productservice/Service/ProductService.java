@@ -4,6 +4,7 @@ package com.toyota.productservice.Service;
 
 import com.toyota.productservice.DTOs.ProductRequest;
 import com.toyota.productservice.DTOs.ProductResponse;
+import com.toyota.productservice.DTOs.ProductWithCampaignDTO;
 import com.toyota.productservice.Entity.Product;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Optional;
 
 public interface ProductService {
 
-    public ProductResponse getProductById(int id);
+    public ProductWithCampaignDTO getProductById(int id);
     List<Product>findAll();
 
     Product findProductByTitle(String title);
