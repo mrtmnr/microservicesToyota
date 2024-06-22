@@ -12,7 +12,12 @@ spring:
           predicates:
             - Path=/product/**
           filters:
-            - AuthenticationFilter
+            - name: AuthenticationFilter
+              args:
+                requiredRolesForServices:
+                  /product/**: [ "USER", "ADMIN" ]
+                  /product/admin/**: [ "ADMIN" ]
+
 
 
   application:

@@ -1,12 +1,18 @@
 package com.toyota.apigateway.filter;
 
 import com.toyota.apigateway.util.JwtUtil;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 
 @Slf4j
@@ -38,14 +44,48 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     log.info("there is bearer ! ");
                 }
 //
-                    jwtUtil.validateJwtToken(authHeader);
+                jwtUtil.validateJwtToken(authHeader);
+
+                //log.info("requiredRolesForServices: {}" , auth.requiredRolesForServices);
 
 
                 log.info("token validated !");
+                List<String> userRoles = jwtUtil.getRoles(authHeader);
+                String path = exchange.getRequest().getPath().toString();
+                Optional<Map.Entry<String, List<String>>> requiredRolesEntry = requiredRolesForServices().entrySet().stream()
+                        .filter(entry -> path.startsWith(entry.getKey()))
+                        .findFirst();
+
+                if (requiredRolesEntry.isPresent()) {
+                    List<String> requiredRoles = requiredRolesEntry.get().getValue();
+                    boolean hasRequiredRole = userRoles.stream().anyMatch(requiredRoles::contains);
+
+                    if (!hasRequiredRole) {
+                        throw new RuntimeException("User does not have the required role");
+                    }
+
+                    log.info("User is authorized for path: {}", path);
+                } else {
+                    log.warn("No roles configured for path: {}", path);
+                }
             }
+
             return chain.filter(exchange);
         });
     }
+
+
+    private Map<String, List<String>> requiredRolesForServices(){
+
+        Map<String, List<String>> map = new HashMap<>();
+
+        map.put("/product/list",List.of("MANAGER"));
+
+
+       return map;
+    }
+
+
 
 
     public static class Config {
