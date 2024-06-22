@@ -41,7 +41,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
                 if (authHeader != null && authHeader.startsWith("Bearer ")) {
                     authHeader = authHeader.substring(7);
-                    log.info("there is bearer ! ");
+
                 }
 //
                 jwtUtil.validateJwtToken(authHeader);
@@ -50,6 +50,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
 
                 log.info("token validated !");
+
                 List<String> userRoles = jwtUtil.getRoles(authHeader);
                 String path = exchange.getRequest().getPath().toString();
                 Optional<Map.Entry<String, List<String>>> requiredRolesEntry = requiredRolesForServices().entrySet().stream()
@@ -79,7 +80,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
         Map<String, List<String>> map = new HashMap<>();
 
-        map.put("/product/list",List.of("MANAGER"));
+        map.put("/product/**",List.of("MANAGER","ADMIN"));
+
 
 
        return map;
