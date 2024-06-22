@@ -69,7 +69,15 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 } else {
                     log.warn("No roles configured for path: {}", path);
                 }
+
+                String username=jwtUtil.getUsernameFromJwtToken(authHeader);
+                exchange.getRequest().mutate().header("username",username).build();
+
+
             }
+
+
+
 
             return chain.filter(exchange);
         });

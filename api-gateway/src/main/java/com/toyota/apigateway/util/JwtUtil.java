@@ -22,6 +22,10 @@ public class JwtUtil {
         return claims.get("roles", List.class);
     }
 
+    public String getUsernameFromJwtToken(String token){
+        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+    }
+
 
 
     public void validateJwtToken(String authToken){
