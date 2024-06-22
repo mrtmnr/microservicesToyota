@@ -1,16 +1,26 @@
 package com.toyota.apigateway.util;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class JwtUtil {
     @Value("${sau.app.jwtSecret}")
     private String jwtSecret;
+
+
+    public Claims getClaims(String token) {
+        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+    }
+
+
+    public List<String> getRoles(String token) {
+        Claims claims = getClaims(token);
+        return claims.get("roles", List.class);
+    }
 
 
 
