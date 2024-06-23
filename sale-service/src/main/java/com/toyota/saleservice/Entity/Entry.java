@@ -18,12 +18,16 @@ public class Entry {
     @Column(name = "total_price")
     private float totalPrice;
 
+    @Column(name = "campaign_active")
+    private boolean campaignActive;
+
     public Entry() {
     }
 
-    public Entry(int quantity, float totalPrice) {
+    public Entry(int quantity, float totalPrice, boolean campaignActive) {
         this.quantity = quantity;
         this.totalPrice = totalPrice;
+        this.campaignActive = campaignActive;
     }
 
     public int getId() {
@@ -59,6 +63,13 @@ public class Entry {
         this.totalPrice = totalPrice;
     }
 
+    public boolean isCampaignActive() {
+        return campaignActive;
+    }
+
+    public void setCampaignActive(boolean campaignActive) {
+        this.campaignActive = campaignActive;
+    }
 
     @Override
     public String toString() {

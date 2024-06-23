@@ -1,6 +1,6 @@
 package com.toyota.saleservice.Service;
 
-
+import com.toyota.saleservice.Enum.EnumPayment;
 import com.toyota.saleservice.DTOs.CampaignDTO;
 import com.toyota.saleservice.DTOs.EntryResponse;
 import com.toyota.saleservice.DTOs.ProductDTO;
@@ -219,6 +219,8 @@ public class SaleServiceImpl implements SaleService {
                         int freeCount=quantity/buyCount;
                         float priceWithCampaign=entryProduct.getPrice()*(entry.getQuantity()-freeCount);
                         entry.setTotalPrice(priceWithCampaign);
+                        entry.setCampaignActive(true);
+
                     }
                     else{
                         entry.setTotalPrice(entryProduct.getPrice());
@@ -230,6 +232,7 @@ public class SaleServiceImpl implements SaleService {
                     float price=entryProduct.getPrice()*entry.getQuantity();
                     float priceWithCampaign=price*((100-percentage)/100);
                     entry.setTotalPrice(priceWithCampaign);
+                    entry.setCampaignActive(true);
                 }
 
             }
@@ -268,21 +271,17 @@ public class SaleServiceImpl implements SaleService {
 
         float totalPrice=(float) entries.stream().mapToDouble(Entry::getTotalPrice).sum();
 
-        sale.setUser(user);
+        sale.setUsername(username);
         sale.setTotalReceived(totalReceived);
         sale.setTotalPrice(totalPrice);
 
 
 
-        if (totalReceived==totalPrice){
-            sale.setChange(0);
+        if (totalPrice>totalReceived) {
+
+            throw new RuntimeException("insufficient funds ! - Payment cancelled !");
         }
-        else if (totalReceived>totalPrice) {
-            sale.setChange(totalReceived-totalPrice);
-        }
-        else{
-            throw new RuntimeException("insufficient funds !");
-        }
+
 
 
         switch (payment) {
@@ -297,19 +296,11 @@ public class SaleServiceImpl implements SaleService {
 
         entries.forEach(entry -> {
 
-            entry.getProduct().setStock(entry.getProduct().getStock()-entry.getQuantity());
+            ProductDTO entryProduct=productProxy.getProductById(entry.getProductId());
+
+            entryProduct.setStock(entryProduct.getStock()-entry.getQuantity());
             sale.addEntry(entry);
 
-            Optional<Campaign>campaign= Optional.ofNullable(entry.getProduct().getCampaign());
-
-            if (campaign.isPresent()){
-
-                AppliedCampaign appliedCampaign=new AppliedCampaign();
-                appliedCampaign.setCampaign(entry.getProduct().getCampaign());
-                appliedCampaign.setDiscountAmount(entry.getQuantity()*entry.getProduct().getPrice()-entry.getTotalPrice());
-                entry.setAppliedCampaign(appliedCampaign);
-
-            }
 
 
         });
