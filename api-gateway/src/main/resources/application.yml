@@ -13,10 +13,13 @@ spring:
             - Path=/product/**
           filters:
             - name: AuthenticationFilter
-              args:
-                requiredRolesForServices:
-                  /product/**: [ "USER", "ADMIN" ]
-                  /product/admin/**: [ "ADMIN" ]
+
+        - id: sale-service
+          uri: lb://SALE-SERVICE
+          predicates:
+            - Path=/sale/**
+          filters:
+            - name: AuthenticationFilter
 
 
 

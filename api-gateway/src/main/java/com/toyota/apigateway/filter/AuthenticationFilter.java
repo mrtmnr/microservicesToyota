@@ -52,31 +52,40 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 log.info("token validated !");
 
                 List<String> userRoles = jwtUtil.getRoles(authHeader);
+
                 String path = exchange.getRequest().getPath().toString();
-                Optional<Map.Entry<String, List<String>>> requiredRolesEntry = requiredRolesForServices().entrySet().stream()
-                        .filter(entry -> path.startsWith(entry.getKey()))
-                        .findFirst();
 
-                if (requiredRolesEntry.isPresent()) {
-                    List<String> requiredRoles = requiredRolesEntry.get().getValue();
-                    boolean hasRequiredRole = userRoles.stream().anyMatch(requiredRoles::contains);
 
-                    if (!hasRequiredRole) {
-                        throw new RuntimeException("User does not have the required role");
+                //let the product path pass without checking authorization
+                if (!(path.startsWith("/product/"))) {
+
+                    Optional<Map.Entry<String, List<String>>> requiredRolesEntry = requiredRolesForServices().entrySet().stream()
+                            .filter(entry -> path.startsWith(entry.getKey()))
+                            .findFirst();
+
+                   // System.out.println(requiredRolesForServices().entrySet().stream().);
+
+                    if (requiredRolesEntry.isPresent()) {
+                        List<String> requiredRoles = requiredRolesEntry.get().getValue();
+                        boolean hasRequiredRole = userRoles.stream().anyMatch(requiredRoles::contains);
+
+                        if (!hasRequiredRole) {
+                            throw new RuntimeException("User does not have the required role");
+                        }
+
+                        log.info("User is authorized for path: {}", path);
+                    } else {
+                        log.warn("No roles configured for path: {}", path);
                     }
 
-                    log.info("User is authorized for path: {}", path);
-                } else {
-                    log.warn("No roles configured for path: {}", path);
+                    String username = jwtUtil.getUsernameFromJwtToken(authHeader);
+                    exchange.getRequest().mutate().header("username", username).build();
+
                 }
 
-                String username=jwtUtil.getUsernameFromJwtToken(authHeader);
-                exchange.getRequest().mutate().header("username",username).build();
 
 
             }
-
-
 
 
             return chain.filter(exchange);
@@ -88,8 +97,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
         Map<String, List<String>> map = new HashMap<>();
 
-        map.put("/product/**",List.of("MANAGER","ADMIN"));
-
+        //map.put("/product/",List.of("MANAGER","ADMIN","CASHIER"));
+        map.put("/sale/",List.of("CASHIER"));
 
 
        return map;
