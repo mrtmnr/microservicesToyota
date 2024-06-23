@@ -16,7 +16,7 @@ public interface ProductService {
     public ProductWithCampaignDTO getProductById(int id);
     List<Product>findAll();
 
-    Product findProductByTitle(String title);
+    Product getProductByTitle(String title);
 
     void save(Product product);
 

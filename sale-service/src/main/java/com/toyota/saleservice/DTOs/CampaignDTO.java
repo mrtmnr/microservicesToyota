@@ -9,15 +9,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductDTO {
-    private int id;
-    private String categoryName;
+public class CampaignDTO {
 
-    private CampaignDTO campaign;
+    private int id;
 
     private String title;
 
-    private float price;
 
-    private int stock;
+    private float discountPercentage;
+
+
+    private boolean isPercentageActive;
+
+
+    private boolean isOneFreeActive;
+
+
 }

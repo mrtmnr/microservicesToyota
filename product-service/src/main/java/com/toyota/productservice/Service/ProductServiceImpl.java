@@ -54,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public Product findProductByTitle(String title) {
+    public Product getProductByTitle(String title) {
 
         Optional<Product>result=productRepository.findProductByTitle(title);
 

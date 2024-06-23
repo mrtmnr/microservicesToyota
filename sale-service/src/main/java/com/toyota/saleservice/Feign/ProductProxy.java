@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "product-service",url = "localhost:8081")
 public interface ProductProxy {
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/getById/{id}")
     public ProductDTO getProductById(@PathVariable int id);
+
+    @GetMapping("/getByTitle/{title}")
+    public ProductDTO getProductByTitle(@PathVariable String title);
 
 
 }

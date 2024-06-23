@@ -3,6 +3,7 @@ package com.toyota.saleservice.Service;
 import com.toyota.saleservice.DTOs.SaleResponse;
 import com.toyota.saleservice.Entity.Sale;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 
 import java.util.List;
@@ -23,7 +24,7 @@ public interface SaleService {
     List<SaleResponse> getPaginatedSales(int offset, int pageSize);
 
     List<SaleResponse>getPaginatedAndSortedSales(int offset,int pageSize,String field);
-    String addToCheckout(String productName);
+    String addToCheckout(String productTitle);
 
     String sell(float totalReceived, String payment);
 

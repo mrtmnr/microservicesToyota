@@ -1,6 +1,7 @@
 package com.toyota.saleservice.Service;
 
 
+import com.toyota.saleservice.DTOs.CampaignDTO;
 import com.toyota.saleservice.DTOs.EntryResponse;
 import com.toyota.saleservice.DTOs.ProductDTO;
 import com.toyota.saleservice.DTOs.SaleResponse;
@@ -17,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -34,13 +36,12 @@ public class SaleServiceImpl implements SaleService {
 
     private CheckoutService checkoutService;
 
-    private UserService userService;
 
-    public SaleServiceImpl( ProductProxy productProxy,SaleRepository saleRepository, CheckoutService checkoutService, UserService userService) {
+
+    public SaleServiceImpl( ProductProxy productProxy,SaleRepository saleRepository, CheckoutService checkoutService,) {
         this.saleRepository = saleRepository;
         this.productProxy=productProxy;
         this.checkoutService = checkoutService;
-        this.userService = userService;
     }
 
 
@@ -161,24 +162,15 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
-    public String addToCheckout(int productId) {
+    public String addToCheckout(String productTitle) {
 
         //Product product=productService.findProductByTitle(productName);
 
-        ProductDTO productDTO=productProxy.getProductById(productId);
+        ProductDTO product=productProxy.getProductByTitle(productTitle);
 
-        String username= SecurityContextHolder.getContext().getAuthentication().getName();
-        User user=userService.findByUsername(username).get();
-        Checkout checkout;
 
-        if (checkoutService.existsByUser(user)){
-            checkout=checkoutService.findByUser(user);
-        }
-        // in this case don't forget to save user !
-        else {
-            checkout=new Checkout();
-            checkout.setUser(user);
-        }
+        Checkout checkout=checkoutService.findById(1);
+
 
         if (product.getStock()==0){
             throw new RuntimeException("this Product out of stock !");
@@ -190,7 +182,7 @@ public class SaleServiceImpl implements SaleService {
         if (checkout.getEntries()!=null){
 
             //if there is a match this means our product is multiple from now on so we just increment the quantity of our existing entry
-            Optional<Entry>matchedEntry=checkout.getEntries().stream().filter(e -> e.getProduct().getId()==product.getId()).findFirst();
+            Optional<Entry>matchedEntry=checkout.getEntries().stream().filter(e -> e.getProductId()==product.getId()).findFirst();
             if (matchedEntry.isPresent()){
                 Entry entry= matchedEntry.get();
 
@@ -204,7 +196,7 @@ public class SaleServiceImpl implements SaleService {
 
             Entry entry=new Entry();
             entry.setQuantity(1);
-            entry.setProduct(product);
+            entry.setProductId(product.getId());
             checkout.addEntry(entry);
 
         }
@@ -212,9 +204,11 @@ public class SaleServiceImpl implements SaleService {
         List<Entry>entries=checkout.getEntries();
         entries.forEach(entry -> {
 
-            Optional<Campaign> campaign= Optional.ofNullable(entry.getProduct().getCampaign());
+            ProductDTO entryProduct=productProxy.getProductById(entry.getProductId());
+
+            Optional<CampaignDTO> campaign= Optional.ofNullable(entryProduct.getCampaign());
             if (campaign.isPresent()){
-                Campaign campaign1=entry.getProduct().getCampaign();
+                CampaignDTO campaign1=entryProduct.getCampaign();
                 if (campaign1.isOneFreeActive()){
 
                     float percentage= campaign1.getDiscountPercentage();
@@ -223,24 +217,24 @@ public class SaleServiceImpl implements SaleService {
 
                     if (quantity>=buyCount){
                         int freeCount=quantity/buyCount;
-                        float priceWithCampaign=entry.getProduct().getPrice()*(entry.getQuantity()-freeCount);
+                        float priceWithCampaign=entryProduct.getPrice()*(entry.getQuantity()-freeCount);
                         entry.setTotalPrice(priceWithCampaign);
                     }
                     else{
-                        entry.setTotalPrice(entry.getProduct().getPrice());
+                        entry.setTotalPrice(entryProduct.getPrice());
                     }
 
                 }
                 if (campaign1.isPercentageActive()){
                     float percentage=campaign1.getDiscountPercentage();
-                    float price=entry.getProduct().getPrice()*entry.getQuantity();
+                    float price=entryProduct.getPrice()*entry.getQuantity();
                     float priceWithCampaign=price*((100-percentage)/100);
                     entry.setTotalPrice(priceWithCampaign);
                 }
 
             }
             else{
-                float price=entry.getProduct().getPrice();
+                float price=entryProduct.getPrice();
                 int quantity=entry.getQuantity();
                 entry.setTotalPrice(price*quantity);
 
@@ -261,11 +255,10 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
-    public String sell(float totalReceived, String payment) {
-        String username=SecurityContextHolder.getContext().getAuthentication().getName();
-        User user=userService.findByUsername(username).get();
+    public String sell(float totalReceived, String payment, @RequestHeader String username) {
 
-        Checkout checkout=checkoutService.findByUser(user);
+
+        Checkout checkout=checkoutService.findById(1);
 
         Sale sale=new Sale();
 

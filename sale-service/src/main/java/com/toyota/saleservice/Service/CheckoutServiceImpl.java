@@ -1,10 +1,12 @@
 package com.toyota.saleservice.Service;
 
-import com.example.toyotamono.Entity.Checkout;
-import com.example.toyotamono.Entity.User;
-import com.example.toyotamono.Repository.CheckoutRepository;
+
+import com.toyota.saleservice.Entity.Checkout;
+import com.toyota.saleservice.Repository.CheckoutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class CheckoutServiceImpl implements CheckoutService{
@@ -16,14 +18,17 @@ public class CheckoutServiceImpl implements CheckoutService{
         this.checkoutRepository = checkoutRepository;
     }
 
-    @Override
-    public boolean existsByUser(User user) {
-        return checkoutRepository.existsByUser(user);
-    }
 
     @Override
-    public Checkout findByUser(User user) {
-        return checkoutRepository.findByUser(user);
+    public Checkout findById(int id) {
+        Optional<Checkout>optionalCheckout= checkoutRepository.findById(id);
+
+        if (optionalCheckout.isPresent()){
+            return optionalCheckout.get();
+        }
+
+        throw new RuntimeException("there is bo checkout with given id: "+id);
+
     }
 
     @Override

@@ -51,7 +51,6 @@ public class Entry {
     }
 
 
-
     public float getTotalPrice() {
         return totalPrice;
     }

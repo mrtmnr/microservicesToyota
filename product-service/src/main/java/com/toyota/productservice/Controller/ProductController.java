@@ -83,11 +83,18 @@ public class ProductController {
 
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/getById/{id}")
     public ProductWithCampaignDTO getProductById(@PathVariable int id){
 
         return productService.getProductById(id);
 
+    }
+
+
+    @GetMapping("/getByTitle/{title}")
+    public Product getProductByTitle(@PathVariable String title){
+
+        return productService.getProductByTitle(title);
     }
 
 
