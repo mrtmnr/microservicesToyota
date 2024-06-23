@@ -58,10 +58,15 @@ public class ProductServiceImpl implements ProductService {
 
         for (int productId:productIds){
 
-            Product product=productRepository.findById(productId).get();
+            Optional<Product> optionalProduct=productRepository.findById(productId);
 
+            if (optionalProduct.isPresent()){
 
-            productWithCampaignDTOS.add(mapToProductWithCampaignDTO(product));
+                productWithCampaignDTOS.add(mapToProductWithCampaignDTO(optionalProduct.get()));
+            }
+            else {
+                throw new RuntimeException("no such product with given id: "+productId);
+            }
 
         }
 
