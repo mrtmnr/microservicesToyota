@@ -159,6 +159,22 @@ public class SaleServiceImpl implements SaleService {
 
     }
 
+    private List<ProductDTO>getProductsFromEntries(List<Entry>entries){
+
+        List<Integer>productIds=new ArrayList<>();
+
+        for (Entry entry:entries){
+
+            productIds.add(entry.getProductId());
+
+        }
+
+        return productProxy.getProductListByIds(productIds);
+
+
+    }
+
+
     @Override
     public String addToCheckout(String productTitle) {
 
@@ -203,21 +219,16 @@ public class SaleServiceImpl implements SaleService {
 
         List<Entry>entries=checkout.getEntries();
 
-        List<Integer>productIds=new ArrayList<>();
+        List<ProductDTO>entryProducts= getProductsFromEntries(entries);
+
+        int index=0;
 
         for (Entry entry:entries){
 
-            productIds.add(entry.getProductId());
 
-        }
+            ProductDTO entryProduct=entryProducts.get(index);
 
-        //List<ProductDTO>entryProducts=productProxy;
-
-
-
-        entries.forEach(entry -> {
-
-            ProductDTO entryProduct=productProxy.getProductById(entry.getProductId());
+            index++;
 
             Optional<CampaignDTO> campaign= Optional.ofNullable(entryProduct.getCampaign());
             if (campaign.isPresent()){
@@ -307,9 +318,17 @@ public class SaleServiceImpl implements SaleService {
 
 
 
-        entries.forEach(entry -> {
+        List<ProductDTO>entryProducts= getProductsFromEntries(entries);
 
-            ProductDTO entryProduct=productProxy.getProductById(entry.getProductId());
+        int index=0;
+
+
+        for(Entry entry:entries){
+
+            ProductDTO entryProduct=entryProducts.get(index);
+
+            index++;
+
 
             entryProduct.setStock(entryProduct.getStock()-entry.getQuantity());
             sale.addEntry(entry);
@@ -332,6 +351,8 @@ public class SaleServiceImpl implements SaleService {
         return "sale has been saved - "+ sale;
     }
 
+
+/*
     @Override
     public ResponseEntity<byte[]> generatePdfById(int saleId) throws DocumentException {
 
@@ -389,6 +410,6 @@ public class SaleServiceImpl implements SaleService {
 
 
     }
-
+*/
 
 }
