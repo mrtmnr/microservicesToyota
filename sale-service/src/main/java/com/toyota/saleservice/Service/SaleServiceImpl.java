@@ -128,14 +128,12 @@ public class SaleServiceImpl implements SaleService {
 
         return SaleResponse.builder()
                 .saleId(sale.getId())
-                .cashierName(sale.getUser().getUsername())
+                .cashierName(sale.getUsername())
                 .date(sale.getDate())
                 .payment(sale.getPayment().toString())
                 .totalPrice(sale.getTotalPrice())
                 .totalReceived(sale.getTotalReceived())
-                .change(sale.getChange())
                 .entryResponses(entryResponses)
-                .appliedCampaignResponses(appliedCampaignResponses)
                 .build();
 
     }
@@ -201,7 +199,22 @@ public class SaleServiceImpl implements SaleService {
 
         }
 
+
+
         List<Entry>entries=checkout.getEntries();
+
+        List<Integer>productIds=new ArrayList<>();
+
+        for (Entry entry:entries){
+
+            productIds.add(entry.getProductId());
+
+        }
+        
+        //List<ProductDTO>entryProducts=productProxy;
+
+
+
         entries.forEach(entry -> {
 
             ProductDTO entryProduct=productProxy.getProductById(entry.getProductId());
