@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,11 +51,28 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+    @Override
+    public List<ProductWithCampaignDTO> getProductListByIds(List<Integer> productIds) {
+
+        List<ProductWithCampaignDTO>productWithCampaignDTOS=new ArrayList<>();
+
+        for (int productId:productIds){
+
+            Product product=productRepository.findById(productId).get();
+
+
+            productWithCampaignDTOS.add(mapToProductWithCampaignDTO(product));
+
+        }
+
+        return productWithCampaignDTOS;
+
+    }
 
 
 
     @Override
-    public Product getProductByTitle(String title) {
+    public ProductWithCampaignDTO getProductByTitle(String title) {
 
         Optional<Product>result=productRepository.findProductByTitle(title);
 
@@ -68,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("product was not found by title: "+title);
         }
 
-        return product;
+        return mapToProductWithCampaignDTO(product);
 
     }
 
@@ -138,6 +156,7 @@ public class ProductServiceImpl implements ProductService {
 
         return "product added !";
     }
+
 
     private ProductResponse mapToProductResponse(Product product) {
 

@@ -16,7 +16,7 @@ public interface ProductService {
     public ProductWithCampaignDTO getProductById(int id);
     List<Product>findAll();
 
-    Product getProductByTitle(String title);
+    ProductWithCampaignDTO getProductByTitle(String title);
 
     void save(Product product);
 
@@ -32,4 +32,6 @@ public interface ProductService {
     List<ProductResponse> findAllResponses(Optional<String> keyword);
 
     String addProduct(ProductRequest productRequest);
+
+    List<ProductWithCampaignDTO> getProductListByIds(List<Integer> productIds);
 }

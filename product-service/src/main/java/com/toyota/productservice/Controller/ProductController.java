@@ -92,9 +92,16 @@ public class ProductController {
 
 
     @GetMapping("/getByTitle/{title}")
-    public Product getProductByTitle(@PathVariable String title){
+    public ProductWithCampaignDTO getProductByTitle(@PathVariable String title){
 
         return productService.getProductByTitle(title);
+    }
+
+    @GetMapping("/getListByIds")
+    public List<ProductWithCampaignDTO> getProductListByIds(){
+
+        return productService.getProductListByIds(@RequestBody List<Integer>productIds);
+
     }
 
 

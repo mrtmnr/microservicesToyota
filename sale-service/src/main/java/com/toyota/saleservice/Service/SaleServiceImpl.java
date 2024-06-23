@@ -210,7 +210,7 @@ public class SaleServiceImpl implements SaleService {
             productIds.add(entry.getProductId());
 
         }
-        
+
         //List<ProductDTO>entryProducts=productProxy;
 
 
