@@ -1,15 +1,14 @@
 package com.toyota.saleservice.Service;
 
+import com.toyota.saleservice.DTOs.*;
 import com.toyota.saleservice.Enum.EnumPayment;
-import com.toyota.saleservice.DTOs.CampaignDTO;
-import com.toyota.saleservice.DTOs.EntryResponse;
-import com.toyota.saleservice.DTOs.ProductDTO;
-import com.toyota.saleservice.DTOs.SaleResponse;
 import com.toyota.saleservice.Entity.Checkout;
 import com.toyota.saleservice.Entity.Entry;
 import com.toyota.saleservice.Entity.Sale;
 import com.toyota.saleservice.Feign.ProductProxy;
 import com.toyota.saleservice.Repository.SaleRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import java.io.ByteArrayOutputStream;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -28,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class SaleServiceImpl implements SaleService {
 
     private SaleRepository saleRepository;
@@ -37,8 +37,8 @@ public class SaleServiceImpl implements SaleService {
     private CheckoutService checkoutService;
 
 
-
-    public SaleServiceImpl( ProductProxy productProxy,SaleRepository saleRepository, CheckoutService checkoutService,) {
+    @Autowired
+    public SaleServiceImpl( ProductProxy productProxy,SaleRepository saleRepository, CheckoutService checkoutService) {
         this.saleRepository = saleRepository;
         this.productProxy=productProxy;
         this.checkoutService = checkoutService;
@@ -96,25 +96,37 @@ public class SaleServiceImpl implements SaleService {
 
 
         List<EntryResponse>entryResponses=new ArrayList<>();
+
         List<AppliedCampaignResponse>appliedCampaignResponses=new ArrayList<>();
 
-        sale.getEntries().forEach(entry -> {
+        List<Entry>entries=sale.getEntries();
 
+        List<ProductDTO>entryProducts= getProductsFromEntries(entries);
+
+        int index=0;
+
+        for(Entry entry:entries){
+
+            ProductDTO entryProduct=entryProducts.get(0);
+
+            index++;
 
            EntryResponse entryResponse= EntryResponse.builder()
-                    .productName(entry.getProduct().getTitle())
+                    .productName(entryProduct.getTitle())
                     .quantity(entry.getQuantity())
-                    .productPrice(entry.getProduct().getPrice())
+                    .productPrice(entryProduct.getPrice())
                     .build();
 
            entryResponses.add(entryResponse);
 
-            if (entry.getAppliedCampaign()!=null){
+            if (entry.isCampaignActive()){
+
+
 
               AppliedCampaignResponse appliedCampaignResponse=  AppliedCampaignResponse.builder()
-                        .campaignName(entry.getProduct().getCampaign().getTitle())
-                        .productName(entry.getProduct().getTitle())
-                        .discountAmount(entry.getAppliedCampaign().getDiscountAmount())
+                        .campaignName(entryProduct.getCampaign().getTitle())
+                        .productName(entryProduct.getTitle())
+                        .discountAmount(entryProduct.getPrice()*entry.getQuantity()-entry.getTotalPrice())
                         .build();
 
               appliedCampaignResponses.add(appliedCampaignResponse);
@@ -122,7 +134,7 @@ public class SaleServiceImpl implements SaleService {
             }
 
 
-        });
+        };
 
 
 
@@ -133,6 +145,7 @@ public class SaleServiceImpl implements SaleService {
                 .payment(sale.getPayment().toString())
                 .totalPrice(sale.getTotalPrice())
                 .totalReceived(sale.getTotalReceived())
+                .appliedCampaignResponses(appliedCampaignResponses)
                 .entryResponses(entryResponses)
                 .build();
 
@@ -168,6 +181,7 @@ public class SaleServiceImpl implements SaleService {
             productIds.add(entry.getProductId());
 
         }
+
 
         return productProxy.getProductListByIds(productIds);
 
@@ -267,7 +281,7 @@ public class SaleServiceImpl implements SaleService {
 
             }
 
-        });
+        };
 
 
         checkoutService.save(checkout);
@@ -282,7 +296,7 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
-    public String sell(float totalReceived, String payment, @RequestHeader String username) {
+    public String sell(float totalReceived, String payment, String username) {
 
 
         Checkout checkout=checkoutService.findById(1);
@@ -335,7 +349,7 @@ public class SaleServiceImpl implements SaleService {
 
 
 
-        });
+        };
 
         //empty the checkout after a sale
         checkout.setEntries(null);

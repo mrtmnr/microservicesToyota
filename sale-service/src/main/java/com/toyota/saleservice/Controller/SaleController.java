@@ -40,19 +40,20 @@ public class SaleController {
 
 
     @PostMapping("/sell/{totalReceived}/{payment}")
-    public String sell(@PathVariable float totalReceived,@PathVariable String payment){
+    public String sell(@PathVariable float totalReceived,@PathVariable String payment,@RequestHeader String username){
 
-       return saleService.sell(totalReceived, payment);
+       return saleService.sell(totalReceived, payment,username);
 
     }
 
+    /*
     @GetMapping("/generatePdf/{saleId}")
     public ResponseEntity<byte[]> generatePdf(@PathVariable int saleId) throws IOException, DocumentException {
 
         return saleService.generatePdfById(saleId);
     }
 
-
+*/
 
     @GetMapping("/list")
     public List<SaleResponse> getAllSales(@RequestParam Optional<String> keyword){

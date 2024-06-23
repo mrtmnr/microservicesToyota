@@ -27,6 +27,8 @@ public class SaleResponse {
 
     private float change;
 
+    private List<AppliedCampaignResponse> appliedCampaignResponses;
+
     private Date date;
 
     private String payment;

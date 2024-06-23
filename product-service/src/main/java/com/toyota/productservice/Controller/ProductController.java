@@ -98,7 +98,7 @@ public class ProductController {
     }
 
     @GetMapping("/getListByIds")
-    public List<ProductWithCampaignDTO> getProductListByIds(@RequestBody List<Integer>productIds){
+    public List<ProductWithCampaignDTO> getProductListByIds(@RequestParam List<Integer>productIds){
 
         return productService.getProductListByIds(productIds);
 

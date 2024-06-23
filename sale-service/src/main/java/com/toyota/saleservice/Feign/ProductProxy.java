@@ -5,20 +5,21 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "product-service",url = "localhost:8081")
+@FeignClient(name = "product-service")
 public interface ProductProxy {
 
-    @GetMapping("/getById/{id}")
+    @GetMapping("/product/getById/{id}")
     public ProductDTO getProductById(@PathVariable int id);
 
-    @GetMapping("/getByTitle/{title}")
+    @GetMapping("/product/getByTitle/{title}")
     public ProductDTO getProductByTitle(@PathVariable String title);
 
-    @GetMapping("/getListByIds")
-    public List<ProductDTO> getProductListByIds(@RequestBody List<Integer>productIds);
+    @GetMapping("/product/getListByIds")
+    public List<ProductDTO> getProductListByIds(@RequestParam List<Integer>productIds);
 
 
 }

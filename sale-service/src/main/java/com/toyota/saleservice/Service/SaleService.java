@@ -26,8 +26,8 @@ public interface SaleService {
     List<SaleResponse>getPaginatedAndSortedSales(int offset,int pageSize,String field);
     String addToCheckout(String productTitle);
 
-    String sell(float totalReceived, String payment, @RequestHeader String username);
+    String sell(float totalReceived, String payment,String username);
 
-    ResponseEntity<byte[]> generatePdfById(int saleId) throws DocumentException;
+    //ResponseEntity<byte[]> generatePdfById(int saleId) throws DocumentException;
 
 }
