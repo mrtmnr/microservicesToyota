@@ -1,5 +1,6 @@
 package com.toyota.saleservice.Entity;
 
+
 import com.toyota.saleservice.Enum.EnumPayment;
 import jakarta.persistence.*;
 
@@ -16,15 +17,12 @@ public class Sale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "checkout_id")
+    Checkout checkout;
 
     private String username;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "sale_id")
-    private List<Entry>entries;
-
-    @Column(name = "total_price")
-    private float totalPrice;
     @Column(name ="total_received" )
     private float totalReceived;
 
@@ -39,9 +37,8 @@ public class Sale {
     }
 
     public Sale(float totalPrice, float totalReceived, Date date,EnumPayment payment) {
-        this.totalPrice = totalPrice;
-        this.totalReceived = totalReceived;
 
+        this.totalReceived = totalReceived;
         this.date = date;
         this.payment=payment;
     }
@@ -54,21 +51,14 @@ public class Sale {
         this.id = id;
     }
 
-    public List<Entry> getEntries() {
-        return entries;
+    public Checkout getCheckout() {
+        return checkout;
     }
 
-    public void setEntries(List<Entry> entries) {
-        this.entries = entries;
+    public void setCheckout(Checkout checkout) {
+        this.checkout = checkout;
     }
 
-    public float getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(float totalPrice) {
-        this.totalPrice = totalPrice;
-    }
 
     public float getTotalReceived() {
         return totalReceived;
@@ -103,6 +93,7 @@ public class Sale {
         this.username = username;
     }
 
+    /*
     public void addEntry(Entry entry){
 
         if (entries==null){
@@ -113,13 +104,13 @@ public class Sale {
 
     }
 
+     */
+
     @Override
     public String toString() {
         return "Sale{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
-                ", entries=" + entries +
-                ", totalPrice=" + totalPrice +
                 ", totalReceived=" + totalReceived +
                 ", date=" + date +
                 ", payment=" + payment +

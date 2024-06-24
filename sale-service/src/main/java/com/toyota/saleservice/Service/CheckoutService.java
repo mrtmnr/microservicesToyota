@@ -10,4 +10,6 @@ public interface CheckoutService {
     void deleteById(int id);
 
     Checkout findById(int id);
+
+    Checkout getLatestCheckout();
 }

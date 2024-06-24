@@ -57,7 +57,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
 
                 //let the product path pass without checking authorization
-                if (!(path.startsWith("/product/"))) {
+                if (!(path.startsWith("/product/"))){
 
                     Optional<Map.Entry<String, List<String>>> requiredRolesEntry = requiredRolesForServices().entrySet().stream()
                             .filter(entry -> path.startsWith(entry.getKey()))
@@ -83,10 +83,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
                 }
 
-
-
             }
-
 
             return chain.filter(exchange);
         });

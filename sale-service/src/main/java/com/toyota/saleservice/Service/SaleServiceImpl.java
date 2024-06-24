@@ -11,13 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
+
 
 
 import java.util.ArrayList;
@@ -99,7 +96,8 @@ public class SaleServiceImpl implements SaleService {
 
         List<AppliedCampaignResponse>appliedCampaignResponses=new ArrayList<>();
 
-        List<Entry>entries=sale.getEntries();
+
+        List<Entry>entries=sale.getCheckout().getEntries();
 
         List<ProductDTO>entryProducts= getProductsFromEntries(entries);
 
@@ -107,7 +105,7 @@ public class SaleServiceImpl implements SaleService {
 
         for(Entry entry:entries){
 
-            ProductDTO entryProduct=entryProducts.get(0);
+            ProductDTO entryProduct=entryProducts.get(index);
 
             index++;
 
@@ -143,7 +141,7 @@ public class SaleServiceImpl implements SaleService {
                 .cashierName(sale.getUsername())
                 .date(sale.getDate())
                 .payment(sale.getPayment().toString())
-                .totalPrice(sale.getTotalPrice())
+                .totalPrice(sale.getCheckout().getTotalPrice())
                 .totalReceived(sale.getTotalReceived())
                 .appliedCampaignResponses(appliedCampaignResponses)
                 .entryResponses(entryResponses)
@@ -192,12 +190,11 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public String addToCheckout(String productTitle) {
 
-        //Product product=productService.findProductByTitle(productName);
 
         ProductDTO product=productProxy.getProductByTitle(productTitle);
 
 
-        Checkout checkout=checkoutService.findById(1);
+        Checkout checkout=checkoutService.getLatestCheckout();
 
 
         if (product.getStock()==0){
@@ -283,11 +280,14 @@ public class SaleServiceImpl implements SaleService {
 
         };
 
+        float checkoutPrice= (float) checkout.getEntries().stream().mapToDouble(Entry::getTotalPrice).sum();
+        checkout.setTotalPrice(checkoutPrice);
+
 
         checkoutService.save(checkout);
 
 
-        float checkoutPrice= (float) checkout.getEntries().stream().mapToDouble(Entry::getTotalPrice).sum();
+
 
         return "total price: "+ checkoutPrice;
 
@@ -299,7 +299,7 @@ public class SaleServiceImpl implements SaleService {
     public String sell(float totalReceived, String payment, String username) {
 
 
-        Checkout checkout=checkoutService.findById(1);
+        Checkout checkout=checkoutService.getLatestCheckout();
 
         Sale sale=new Sale();
 
@@ -307,11 +307,10 @@ public class SaleServiceImpl implements SaleService {
         List<Entry>entries=checkout.getEntries();
 
 
-        float totalPrice=(float) entries.stream().mapToDouble(Entry::getTotalPrice).sum();
+        float totalPrice=checkout.getTotalPrice();
 
         sale.setUsername(username);
         sale.setTotalReceived(totalReceived);
-        sale.setTotalPrice(totalPrice);
 
 
 
@@ -331,11 +330,11 @@ public class SaleServiceImpl implements SaleService {
         sale.setDate(new Date());
 
 
-
         List<ProductDTO>entryProducts= getProductsFromEntries(entries);
 
         int index=0;
 
+        //decrement stocks
 
         for(Entry entry:entries){
 
@@ -343,18 +342,12 @@ public class SaleServiceImpl implements SaleService {
 
             index++;
 
-
             entryProduct.setStock(entryProduct.getStock()-entry.getQuantity());
-            sale.addEntry(entry);
-
-
 
         };
 
-        //empty the checkout after a sale
-        checkout.setEntries(null);
+        sale.setCheckout(checkout);
 
-        checkoutService.save(checkout);
 
 
         saleRepository.save(sale);

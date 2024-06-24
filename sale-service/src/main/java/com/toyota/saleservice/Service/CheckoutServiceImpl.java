@@ -32,6 +32,11 @@ public class CheckoutServiceImpl implements CheckoutService{
     }
 
     @Override
+    public Checkout getLatestCheckout() {
+        return checkoutRepository.findTopByOrderByIdDesc();
+    }
+
+    @Override
     public void save(Checkout checkout) {
         checkoutRepository.save(checkout);
     }

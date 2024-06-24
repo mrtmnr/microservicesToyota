@@ -14,10 +14,12 @@ public class Checkout {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-
     @OneToMany(fetch = FetchType.LAZY,cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
     @JoinColumn(name = "checkout_id")
     private List<Entry> entries;
+
+    @Column(name = "total_price")
+    private float totalPrice;
 
     public Checkout() {
     }
@@ -38,6 +40,13 @@ public class Checkout {
         this.entries = entries;
     }
 
+    public float getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(float totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 
     public void addEntry(Entry entry){
         if (entries==null){
