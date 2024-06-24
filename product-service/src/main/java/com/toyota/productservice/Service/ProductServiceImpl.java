@@ -3,12 +3,13 @@ package com.toyota.productservice.Service;
 
 import com.toyota.productservice.DTOs.CampaignDTO;
 import com.toyota.productservice.DTOs.ProductRequest;
+import com.toyota.productservice.DTOs.ProductResponse;
 import com.toyota.productservice.DTOs.ProductDTO;
-import com.toyota.productservice.DTOs.ProductWithCampaignDTO;
 import com.toyota.productservice.Entity.Campaign;
 import com.toyota.productservice.Entity.Category;
 import com.toyota.productservice.Entity.Product;
 import com.toyota.productservice.Repository.ProductRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class ProductServiceImpl implements ProductService {
 
     private ProductRepository productRepository;
@@ -40,21 +42,21 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public ProductWithCampaignDTO getProductById(int id) {
+    public ProductDTO getProductById(int id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isEmpty()){
             throw new RuntimeException("product not found with given id: "+id);
         }
 
         Product product=optionalProduct.get();
-        return mapToProductWithCampaignDTO(product);
+        return mapToProductDTO(product);
 
     }
 
     @Override
-    public List<ProductWithCampaignDTO> getProductListByIds(List<Integer> productIds) {
+    public List<ProductDTO> getProductListByIds(List<Integer> productIds) {
 
-        List<ProductWithCampaignDTO>productWithCampaignDTOS=new ArrayList<>();
+        List<ProductDTO>productWithCampaignDTOS=new ArrayList<>();
 
         for (int productId:productIds){
 
@@ -62,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
 
             if (optionalProduct.isPresent()){
 
-                productWithCampaignDTOS.add(mapToProductWithCampaignDTO(optionalProduct.get()));
+                productWithCampaignDTOS.add(mapToProductDTO(optionalProduct.get()));
             }
             else {
                 throw new RuntimeException("no such product with given id: "+productId);
@@ -75,8 +77,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateStock(List<ProductDTO> products) {
-        for (ProductDTO productDTO : products) {
+    public void updateStock(List<ProductResponse> products) {
+        for (ProductResponse productDTO : products) {
             Product product = productRepository.findById(productDTO.getId())
                     .orElseThrow(() -> new RuntimeException("Product not found"));
             product.setStock(productDTO.getStock());
@@ -85,7 +87,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductWithCampaignDTO getProductByTitle(String title) {
+    public ProductDTO getProductByTitle(String title) {
 
         Optional<Product>result=productRepository.findProductByTitle(title);
 
@@ -99,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
             throw new RuntimeException("product was not found by title: "+title);
         }
 
-        return mapToProductWithCampaignDTO(product);
+        return mapToProductDTO(product);
 
     }
 
@@ -134,7 +136,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> findAllResponses(Optional<String> keyword) {
+    public List<ProductResponse> findAllResponses(Optional<String> keyword) {
 
         List<Product>productList;
 
@@ -174,7 +176,7 @@ public class ProductServiceImpl implements ProductService {
 
 
 
-    private ProductDTO mapToProductResponse(Product product) {
+    private ProductResponse mapToProductResponse(Product product) {
 
         String campaignName=null;
 
@@ -184,7 +186,7 @@ public class ProductServiceImpl implements ProductService {
             campaignName=campaign.get().getTitle();
         }
 
-        return ProductDTO.builder()
+        return ProductResponse.builder()
                 .id(product.getId())
                 .stock(product.getStock())
                 .price(product.getPrice())
@@ -195,14 +197,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-    private ProductWithCampaignDTO mapToProductWithCampaignDTO(Product product) {
+    private ProductDTO mapToProductDTO(Product product) {
 
         CampaignDTO campaignDTO=null;
 
         Optional<Campaign>optionalCampaign=Optional.ofNullable(product.getCampaign());
 
+
+
         if (optionalCampaign.isPresent()){
+
             Campaign campaign=optionalCampaign.get();
+
+
             campaignDTO=CampaignDTO.builder()
                     .id(campaign.getId())
                     .title(campaign.getTitle())
@@ -212,7 +219,9 @@ public class ProductServiceImpl implements ProductService {
                     .build();
         }
 
-        return ProductWithCampaignDTO.builder()
+        log.info("campaignDTO: {}",campaignDTO);
+
+        return ProductDTO.builder()
                 .id(product.getId())
                 .stock(product.getStock())
                 .price(product.getPrice())

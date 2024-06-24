@@ -122,7 +122,7 @@ public class SaleServiceImpl implements SaleService {
 
 
               AppliedCampaignResponse appliedCampaignResponse=  AppliedCampaignResponse.builder()
-                        .campaignName(entryProduct.getCampaign().getTitle())
+                        .campaignName(entryProduct.getCampaignDTO().getTitle())
                         .productName(entryProduct.getTitle())
                         .discountAmount(entryProduct.getPrice()*entry.getQuantity()-entry.getTotalPrice())
                         .build();
@@ -180,7 +180,12 @@ public class SaleServiceImpl implements SaleService {
         }
 
 
-        return productProxy.getProductListByIds(productIds);
+
+        List<ProductDTO>productListFromProductService= productProxy.getProductListByIds(productIds);
+
+        productListFromProductService.forEach(System.out::println);
+
+        return productListFromProductService;
 
 
     }
@@ -191,6 +196,8 @@ public class SaleServiceImpl implements SaleService {
 
 
         ProductDTO product=productProxy.getProductByTitle(productTitle);
+
+        log.info("product: "+product);
 
 
         Checkout checkout=checkoutService.getLatestCheckout();
@@ -238,11 +245,14 @@ public class SaleServiceImpl implements SaleService {
 
             ProductDTO entryProduct=entryProducts.get(index);
 
+           // System.out.println(entryProducts.get(index));
+
             index++;
 
-            Optional<CampaignDTO> campaign= Optional.ofNullable(entryProduct.getCampaign());
+            Optional<CampaignDTO> campaign= Optional.ofNullable(entryProduct.getCampaignDTO());
             if (campaign.isPresent()){
-                CampaignDTO campaign1=entryProduct.getCampaign();
+                CampaignDTO campaign1=entryProduct.getCampaignDTO();
+                log.info("Campaign: "+campaign1.getTitle());
                 if (campaign1.isOneFreeActive()){
 
                     float percentage= campaign1.getDiscountPercentage();

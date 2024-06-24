@@ -1,5 +1,6 @@
 package com.toyota.saleservice.Controller;
 
+import com.toyota.saleservice.DTOs.ProductDTO;
 import com.toyota.saleservice.DTOs.SaleResponse;
 import com.toyota.saleservice.Feign.ProductProxy;
 import com.toyota.saleservice.Service.CheckoutService;
@@ -99,9 +100,6 @@ public class SaleController {
 
 
     }
-
-
-
 
 
 

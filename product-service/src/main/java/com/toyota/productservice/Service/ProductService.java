@@ -3,8 +3,8 @@ package com.toyota.productservice.Service;
 
 
 import com.toyota.productservice.DTOs.ProductRequest;
+import com.toyota.productservice.DTOs.ProductResponse;
 import com.toyota.productservice.DTOs.ProductDTO;
-import com.toyota.productservice.DTOs.ProductWithCampaignDTO;
 import com.toyota.productservice.Entity.Product;
 
 import java.util.List;
@@ -13,10 +13,10 @@ import java.util.Optional;
 
 public interface ProductService {
 
-    public ProductWithCampaignDTO getProductById(int id);
+    public ProductDTO getProductById(int id);
     List<Product>findAll();
 
-    ProductWithCampaignDTO getProductByTitle(String title);
+    ProductDTO getProductByTitle(String title);
 
     void save(Product product);
 
@@ -29,11 +29,11 @@ public interface ProductService {
     List<Product>getPaginatedAndSortedProducts(int offset,int pageSize,String field);
 
 
-    List<ProductDTO> findAllResponses(Optional<String> keyword);
+    List<ProductResponse> findAllResponses(Optional<String> keyword);
 
     String addProduct(ProductRequest productRequest);
 
-    List<ProductWithCampaignDTO> getProductListByIds(List<Integer> productIds);
+    List<ProductDTO> getProductListByIds(List<Integer> productIds);
 
-    void updateStock(List<ProductDTO> products);
+    void updateStock(List<ProductResponse> products);
 }

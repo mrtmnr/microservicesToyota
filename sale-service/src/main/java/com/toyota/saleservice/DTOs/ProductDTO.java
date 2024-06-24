@@ -1,5 +1,6 @@
 package com.toyota.saleservice.DTOs;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +14,8 @@ public class ProductDTO {
     private int id;
     private String categoryName;
 
-    private CampaignDTO campaign;
+    @JsonProperty("campaignDTO")
+    private CampaignDTO campaignDTO;
 
     private String title;
 

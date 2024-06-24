@@ -2,8 +2,8 @@ package com.toyota.productservice.Controller;
 
 
 import com.toyota.productservice.DTOs.ProductRequest;
+import com.toyota.productservice.DTOs.ProductResponse;
 import com.toyota.productservice.DTOs.ProductDTO;
-import com.toyota.productservice.DTOs.ProductWithCampaignDTO;
 import com.toyota.productservice.Entity.Product;
 import com.toyota.productservice.Service.ProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ public class ProductController {
     }
 
     @PutMapping("/updateStock")
-    public ResponseEntity<Void> updateStock(@RequestBody List<ProductDTO> products) {
+    public ResponseEntity<Void> updateStock(@RequestBody List<ProductResponse> products) {
         productService.updateStock(products);
         return ResponseEntity.ok().build();
     }
@@ -45,7 +45,7 @@ public class ProductController {
 
 
     @GetMapping("/list")
-    public List<ProductDTO>getAllProducts(@RequestParam Optional<String> keyword){
+    public List<ProductResponse>getAllProducts(@RequestParam Optional<String> keyword){
 
         if (keyword.isPresent()){
             log.info("search keyword: {}",keyword);
@@ -91,7 +91,7 @@ public class ProductController {
     }
 
     @GetMapping("/getById/{id}")
-    public ProductWithCampaignDTO getProductById(@PathVariable int id){
+    public ProductDTO getProductById(@PathVariable int id){
 
         return productService.getProductById(id);
 
@@ -99,13 +99,13 @@ public class ProductController {
 
 
     @GetMapping("/getByTitle/{title}")
-    public ProductWithCampaignDTO getProductByTitle(@PathVariable String title){
+    public ProductDTO getProductByTitle(@PathVariable String title){
 
         return productService.getProductByTitle(title);
     }
 
     @GetMapping("/getListByIds")
-    public List<ProductWithCampaignDTO> getProductListByIds(@RequestParam List<Integer>productIds){
+    public List<ProductDTO> getProductListByIds(@RequestParam List<Integer>productIds){
 
         return productService.getProductListByIds(productIds);
 

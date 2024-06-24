@@ -1,9 +1,11 @@
 package com.toyota.productservice.DTOs;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 
 @Data
 @AllArgsConstructor
@@ -13,7 +15,7 @@ public class ProductDTO {
     private int id;
     private String categoryName;
 
-    private String campaignName;
+    private CampaignDTO campaignDTO;
 
     private String title;
 

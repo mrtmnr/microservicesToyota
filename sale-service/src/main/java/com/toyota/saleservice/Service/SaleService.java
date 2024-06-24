@@ -1,9 +1,11 @@
 package com.toyota.saleservice.Service;
 
+
+import com.toyota.saleservice.DTOs.ProductDTO;
 import com.toyota.saleservice.DTOs.SaleResponse;
+import com.toyota.saleservice.Entity.Entry;
 import com.toyota.saleservice.Entity.Sale;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
+
 
 
 import java.util.List;
