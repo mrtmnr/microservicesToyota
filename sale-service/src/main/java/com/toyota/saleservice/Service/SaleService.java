@@ -30,6 +30,8 @@ public interface SaleService {
 
     String sell(float totalReceived, String payment,String username);
 
+    SaleResponse getSaleById(int saleId);
+
     //ResponseEntity<byte[]> generatePdfById(int saleId) throws DocumentException;
 
 }

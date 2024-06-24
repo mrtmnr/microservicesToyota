@@ -92,9 +92,9 @@ public class SaleServiceImpl implements SaleService {
     private SaleResponse mapToSaleResponse(Sale sale) {
 
 
-        List<EntryResponse>entryResponses=new ArrayList<>();
+        List<EntryDTO> entryDTOS =new ArrayList<>();
 
-        List<AppliedCampaignResponse>appliedCampaignResponses=new ArrayList<>();
+       // List<AppliedCampaignResponse>appliedCampaignResponses=new ArrayList<>();
 
 
         List<Entry>entries=sale.getCheckout().getEntries();
@@ -103,22 +103,36 @@ public class SaleServiceImpl implements SaleService {
 
         int index=0;
 
+
         for(Entry entry:entries){
 
             ProductDTO entryProduct=entryProducts.get(index);
 
-            index++;
+            String campaignName=null;
 
-           EntryResponse entryResponse= EntryResponse.builder()
-                    .productName(entryProduct.getTitle())
-                    .quantity(entry.getQuantity())
-                    .productPrice(entryProduct.getPrice())
-                    .build();
-
-           entryResponses.add(entryResponse);
 
             if (entry.isCampaignActive()){
+                campaignName=entryProduct.getCampaignDTO().getTitle();
+            }
 
+
+            index++;
+
+
+           EntryDTO entryDTO = EntryDTO.builder()
+                    .productName(entryProduct.getTitle())
+                    .quantity(entry.getQuantity())
+                    .campaignActive(entry.isCampaignActive())
+                    .campaignName(campaignName)
+                    .productPrice(entryProduct.getPrice())
+                    .totalPrice(entry.getTotalPrice())
+                    .build();
+
+           entryDTOS.add(entryDTO);
+
+           /*
+
+            if (entry.isCampaignActive()){
 
 
               AppliedCampaignResponse appliedCampaignResponse=  AppliedCampaignResponse.builder()
@@ -130,7 +144,7 @@ public class SaleServiceImpl implements SaleService {
               appliedCampaignResponses.add(appliedCampaignResponse);
 
             }
-
+        */
 
         };
 
@@ -143,8 +157,7 @@ public class SaleServiceImpl implements SaleService {
                 .payment(sale.getPayment().toString())
                 .totalPrice(sale.getCheckout().getTotalPrice())
                 .totalReceived(sale.getTotalReceived())
-                .appliedCampaignResponses(appliedCampaignResponses)
-                .entryResponses(entryResponses)
+                .entryDTOs(entryDTOS)
                 .build();
 
     }
@@ -189,6 +202,7 @@ public class SaleServiceImpl implements SaleService {
 
 
     }
+
 
 
     @Override
@@ -374,6 +388,28 @@ public class SaleServiceImpl implements SaleService {
 
 
         return "sale has been saved - "+ sale;
+    }
+
+    @Override
+    public SaleResponse getSaleById(int saleId) {
+
+        Sale sale=null;
+
+        Optional<Sale>optionalSale=saleRepository.findById(saleId);
+
+        if (optionalSale.isPresent()){
+
+            sale=optionalSale.get();
+
+        }
+        else{
+            throw new RuntimeException("There is no Sale with given id: "+saleId);
+        }
+
+
+        return mapToSaleResponse(sale);
+
+
     }
 
 

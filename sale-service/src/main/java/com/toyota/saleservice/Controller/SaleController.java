@@ -5,6 +5,7 @@ import com.toyota.saleservice.DTOs.SaleResponse;
 import com.toyota.saleservice.Feign.ProductProxy;
 import com.toyota.saleservice.Service.CheckoutService;
 import com.toyota.saleservice.Service.SaleService;
+import com.toyota.saleservice.Service.SaleServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -47,14 +48,13 @@ public class SaleController {
 
     }
 
-    /*
-    @GetMapping("/generatePdf/{saleId}")
-    public ResponseEntity<byte[]> generatePdf(@PathVariable int saleId) throws IOException, DocumentException {
+    @GetMapping("/getSaleById/{saleId}")
+    public SaleResponse getSaleById(@PathVariable int saleId){
 
-        return saleService.generatePdfById(saleId);
+        return saleService.getSaleById(saleId);
+
     }
 
-*/
 
     @GetMapping("/list")
     public List<SaleResponse> getAllSales(@RequestParam Optional<String> keyword){

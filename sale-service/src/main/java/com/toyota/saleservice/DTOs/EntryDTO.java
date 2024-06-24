@@ -10,11 +10,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class EntryResponse {
+public class EntryDTO {
 
     private String productName;
 
     private int quantity;
+
+    private boolean campaignActive;
+
+    private String campaignName;
+    private float totalPrice;
 
     private float productPrice;
 

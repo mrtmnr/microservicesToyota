@@ -1,4 +1,4 @@
-package com.toyota.saleservice.DTOs;
+package com.toyota.reportservice.DTOs;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +19,7 @@ public class SaleResponse {
 
     private String cashierName;
 
-    private List<EntryDTO> entryDTOs;
+    private List<EntryDTO> entryDTOS;
 
     private float totalPrice;
 
@@ -27,7 +27,7 @@ public class SaleResponse {
 
     private float change;
 
-   //private List<AppliedCampaignResponse> appliedCampaignResponses;
+    //private List<AppliedCampaignResponse> appliedCampaignResponses;
 
     private Date date;
 
