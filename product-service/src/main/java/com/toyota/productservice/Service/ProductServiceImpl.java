@@ -3,7 +3,7 @@ package com.toyota.productservice.Service;
 
 import com.toyota.productservice.DTOs.CampaignDTO;
 import com.toyota.productservice.DTOs.ProductRequest;
-import com.toyota.productservice.DTOs.ProductResponse;
+import com.toyota.productservice.DTOs.ProductDTO;
 import com.toyota.productservice.DTOs.ProductWithCampaignDTO;
 import com.toyota.productservice.Entity.Campaign;
 import com.toyota.productservice.Entity.Category;
@@ -74,7 +74,15 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-
+    @Override
+    public void updateStock(List<ProductDTO> products) {
+        for (ProductDTO productDTO : products) {
+            Product product = productRepository.findById(productDTO.getId())
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+            product.setStock(productDTO.getStock());
+            productRepository.save(product);
+        }
+    }
 
     @Override
     public ProductWithCampaignDTO getProductByTitle(String title) {
@@ -126,7 +134,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponse> findAllResponses(Optional<String> keyword) {
+    public List<ProductDTO> findAllResponses(Optional<String> keyword) {
 
         List<Product>productList;
 
@@ -163,7 +171,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-    private ProductResponse mapToProductResponse(Product product) {
+
+
+
+    private ProductDTO mapToProductResponse(Product product) {
 
         String campaignName=null;
 
@@ -173,7 +184,7 @@ public class ProductServiceImpl implements ProductService {
             campaignName=campaign.get().getTitle();
         }
 
-        return ProductResponse.builder()
+        return ProductDTO.builder()
                 .id(product.getId())
                 .stock(product.getStock())
                 .price(product.getPrice())

@@ -2,10 +2,7 @@ package com.toyota.saleservice.Feign;
 
 import com.toyota.saleservice.DTOs.ProductDTO;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,6 +17,9 @@ public interface ProductProxy {
 
     @GetMapping("/product/getListByIds")
     public List<ProductDTO> getProductListByIds(@RequestParam List<Integer>productIds);
+
+    @PutMapping("/product/updateStock")
+    void updateStock(@RequestBody List<ProductDTO> products);
 
 
 }

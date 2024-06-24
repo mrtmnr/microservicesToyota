@@ -148,8 +148,7 @@ public class SaleServiceImpl implements SaleService {
                 .build();
 
     }
-
-
+    
 
     @Override
     public List<SaleResponse> sortSaleByField(String field) {
@@ -280,7 +279,10 @@ public class SaleServiceImpl implements SaleService {
 
         };
 
+
         float checkoutPrice= (float) checkout.getEntries().stream().mapToDouble(Entry::getTotalPrice).sum();
+        log.info("totalPrice: {}",checkoutPrice);
+
         checkout.setTotalPrice(checkoutPrice);
 
 
@@ -335,7 +337,6 @@ public class SaleServiceImpl implements SaleService {
         int index=0;
 
         //decrement stocks
-
         for(Entry entry:entries){
 
             ProductDTO entryProduct=entryProducts.get(index);
@@ -346,8 +347,15 @@ public class SaleServiceImpl implements SaleService {
 
         };
 
+        //update products in product-service
+        productProxy.updateStock(entryProducts);
+
+
         sale.setCheckout(checkout);
 
+        Checkout nextCheckout=new Checkout();
+
+        checkoutService.save(nextCheckout);
 
 
         saleRepository.save(sale);

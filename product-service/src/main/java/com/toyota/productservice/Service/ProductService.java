@@ -3,7 +3,7 @@ package com.toyota.productservice.Service;
 
 
 import com.toyota.productservice.DTOs.ProductRequest;
-import com.toyota.productservice.DTOs.ProductResponse;
+import com.toyota.productservice.DTOs.ProductDTO;
 import com.toyota.productservice.DTOs.ProductWithCampaignDTO;
 import com.toyota.productservice.Entity.Product;
 
@@ -29,9 +29,11 @@ public interface ProductService {
     List<Product>getPaginatedAndSortedProducts(int offset,int pageSize,String field);
 
 
-    List<ProductResponse> findAllResponses(Optional<String> keyword);
+    List<ProductDTO> findAllResponses(Optional<String> keyword);
 
     String addProduct(ProductRequest productRequest);
 
     List<ProductWithCampaignDTO> getProductListByIds(List<Integer> productIds);
+
+    void updateStock(List<ProductDTO> products);
 }

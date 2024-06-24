@@ -2,12 +2,13 @@ package com.toyota.productservice.Controller;
 
 
 import com.toyota.productservice.DTOs.ProductRequest;
-import com.toyota.productservice.DTOs.ProductResponse;
+import com.toyota.productservice.DTOs.ProductDTO;
 import com.toyota.productservice.DTOs.ProductWithCampaignDTO;
 import com.toyota.productservice.Entity.Product;
 import com.toyota.productservice.Service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,10 +36,16 @@ public class ProductController {
 
     }
 
+    @PutMapping("/updateStock")
+    public ResponseEntity<Void> updateStock(@RequestBody List<ProductDTO> products) {
+        productService.updateStock(products);
+        return ResponseEntity.ok().build();
+    }
+
 
 
     @GetMapping("/list")
-    public List<ProductResponse>getAllProducts(@RequestParam Optional<String> keyword){
+    public List<ProductDTO>getAllProducts(@RequestParam Optional<String> keyword){
 
         if (keyword.isPresent()){
             log.info("search keyword: {}",keyword);
