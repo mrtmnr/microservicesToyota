@@ -385,8 +385,6 @@ public class SaleServiceImpl implements SaleService {
         saleRepository.save(sale);
 
 
-
-
         return "sale has been saved - "+ sale;
     }
 

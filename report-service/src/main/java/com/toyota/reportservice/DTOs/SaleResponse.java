@@ -1,5 +1,6 @@
 package com.toyota.reportservice.DTOs;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +20,8 @@ public class SaleResponse {
 
     private String cashierName;
 
-    private List<EntryDTO> entryDTOS;
+    @JsonProperty("entryDTOs")
+    private List<EntryDTO> entryDTOs;
 
     private float totalPrice;
 

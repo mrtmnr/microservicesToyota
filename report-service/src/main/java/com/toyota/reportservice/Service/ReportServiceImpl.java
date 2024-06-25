@@ -18,13 +18,13 @@ import java.io.ByteArrayOutputStream;
 
 
 @Service
-public class SaleServiceImpl implements SaleService{
+public class ReportServiceImpl implements ReportService {
 
 
     private SaleProxy saleProxy;
 
     @Autowired
-    public SaleServiceImpl(SaleProxy saleProxy) {
+    public ReportServiceImpl(SaleProxy saleProxy) {
         this.saleProxy = saleProxy;
     }
 
@@ -50,7 +50,7 @@ public class SaleServiceImpl implements SaleService{
 
 
 
-        for (EntryDTO entry: sale.getEntryDTOS()){
+        for (EntryDTO entry: sale.getEntryDTOs()){
 
             document.add(new Paragraph(" - Product: "+entry.getProductName()+" | Quantity: "+entry.getQuantity()+" | Price: "+entry.getProductPrice()));
 

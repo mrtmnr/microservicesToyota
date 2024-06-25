@@ -21,6 +21,13 @@ spring:
           filters:
             - name: AuthenticationFilter
 
+        - id: report-service
+          uri: lb://REPORT-SERVICE
+          predicates:
+            - Path=/report/**
+          filters:
+            - name: AuthenticationFilter
+
 
 
   application:

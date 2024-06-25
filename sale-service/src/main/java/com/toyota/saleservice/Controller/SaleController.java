@@ -27,7 +27,7 @@ public class SaleController {
 
 
     @Autowired
-    public SaleController(ProductProxy productProxy, CheckoutService checkoutService, SaleService saleService) {
+    public SaleController(CheckoutService checkoutService, SaleService saleService) {
         this.saleService = saleService;
 
     }
