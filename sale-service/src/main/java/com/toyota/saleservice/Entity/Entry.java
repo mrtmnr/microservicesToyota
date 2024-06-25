@@ -78,6 +78,7 @@ public class Entry {
                 ", productId=" + productId +
                 ", quantity=" + quantity +
                 ", totalPrice=" + totalPrice +
+                ", campaignActive=" + campaignActive +
                 '}';
     }
 }

@@ -92,7 +92,7 @@ public class SaleServiceImpl implements SaleService {
     private SaleResponse mapToSaleResponse(Sale sale) {
 
 
-        List<EntryDTO> entryDTOS =new ArrayList<>();
+        List<EntryDTO> entryDTOs =new ArrayList<>();
 
        // List<AppliedCampaignResponse>appliedCampaignResponses=new ArrayList<>();
 
@@ -101,6 +101,8 @@ public class SaleServiceImpl implements SaleService {
 
         List<ProductDTO>entryProducts= getProductsFromEntries(entries);
 
+        log.info("entryProduct: "+ entryProducts.get(0));
+
         int index=0;
 
 
@@ -108,7 +110,11 @@ public class SaleServiceImpl implements SaleService {
 
             ProductDTO entryProduct=entryProducts.get(index);
 
+            index++;
+
             String campaignName=null;
+
+
 
 
             if (entry.isCampaignActive()){
@@ -116,7 +122,7 @@ public class SaleServiceImpl implements SaleService {
             }
 
 
-            index++;
+
 
 
            EntryDTO entryDTO = EntryDTO.builder()
@@ -128,7 +134,9 @@ public class SaleServiceImpl implements SaleService {
                     .totalPrice(entry.getTotalPrice())
                     .build();
 
-           entryDTOS.add(entryDTO);
+            
+
+           entryDTOs.add(entryDTO);
 
            /*
 
@@ -157,7 +165,7 @@ public class SaleServiceImpl implements SaleService {
                 .payment(sale.getPayment().toString())
                 .totalPrice(sale.getCheckout().getTotalPrice())
                 .totalReceived(sale.getTotalReceived())
-                .entryDTOs(entryDTOS)
+                .entryDTOs(entryDTOs)
                 .build();
 
     }
@@ -196,7 +204,7 @@ public class SaleServiceImpl implements SaleService {
 
         List<ProductDTO>productListFromProductService= productProxy.getProductListByIds(productIds);
 
-        productListFromProductService.forEach(System.out::println);
+       // productListFromProductService.forEach(System.out::println);
 
         return productListFromProductService;
 
@@ -211,7 +219,7 @@ public class SaleServiceImpl implements SaleService {
 
         ProductDTO product=productProxy.getProductByTitle(productTitle);
 
-        log.info("product: "+product);
+       // log.info("product: "+product);
 
 
         Checkout checkout=checkoutService.getLatestCheckout();
@@ -259,14 +267,14 @@ public class SaleServiceImpl implements SaleService {
 
             ProductDTO entryProduct=entryProducts.get(index);
 
-           // System.out.println(entryProducts.get(index));
+            System.out.println(entryProducts.get(index));
 
             index++;
 
             Optional<CampaignDTO> campaign= Optional.ofNullable(entryProduct.getCampaignDTO());
             if (campaign.isPresent()){
                 CampaignDTO campaign1=entryProduct.getCampaignDTO();
-                log.info("Campaign: "+campaign1.getTitle());
+               // log.info("Campaign: "+campaign1.getTitle());
                 if (campaign1.isOneFreeActive()){
 
                     float percentage= campaign1.getDiscountPercentage();

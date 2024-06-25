@@ -7,6 +7,7 @@ import com.toyota.reportservice.DTOs.EntryDTO;
 
 import com.toyota.reportservice.DTOs.SaleResponse;
 import com.toyota.reportservice.Feign.SaleProxy;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 
 
 @Service
+@Slf4j
 public class ReportServiceImpl implements ReportService {
 
 
@@ -32,6 +34,7 @@ public class ReportServiceImpl implements ReportService {
     public ResponseEntity<byte[]> generatePdfById(int saleId) throws DocumentException {
 
         SaleResponse sale=saleProxy.getSaleById(saleId);
+
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Document document = new Document(PageSize.A6);
@@ -68,11 +71,13 @@ public class ReportServiceImpl implements ReportService {
 
         document.add(new Paragraph("Total Price: "+sale.getTotalPrice()));
         document.add(new Paragraph("Total Received: "+sale.getTotalReceived()));
-        document.add(new Paragraph("Change: "+sale.getChange()));
+        document.add(new Paragraph("Change: "+ (sale.getTotalReceived()-sale.getTotalPrice())));
         document.add(new Paragraph("\n"));
 
 
         document.add(new Paragraph("Payment Method: "+sale.getPayment()));
+        document.add(new Paragraph("\n"));
+        document.add(new Paragraph("THANK YOU "));
 
 
         document.close();
