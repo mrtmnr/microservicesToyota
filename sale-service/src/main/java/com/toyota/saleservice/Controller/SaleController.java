@@ -59,8 +59,10 @@ public class SaleController {
     @GetMapping("/list")
     public List<SaleResponse> getAllSales(@RequestParam Optional<String> keyword){
 
+
+
         if (keyword.isPresent()){
-            log.info("search keyword: {}",keyword);
+            log.info("search keyword: {}",keyword.get());
         }
 
 

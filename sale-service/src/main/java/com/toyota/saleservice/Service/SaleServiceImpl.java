@@ -89,6 +89,8 @@ public class SaleServiceImpl implements SaleService {
 
 
 
+
+
     private SaleResponse mapToSaleResponse(Sale sale) {
 
 
@@ -134,7 +136,7 @@ public class SaleServiceImpl implements SaleService {
                     .totalPrice(entry.getTotalPrice())
                     .build();
 
-            
+
 
            entryDTOs.add(entryDTO);
 
@@ -417,6 +419,7 @@ public class SaleServiceImpl implements SaleService {
 
 
     }
+
 
 
 /*

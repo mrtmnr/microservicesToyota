@@ -13,7 +13,6 @@ public class CampaignDTO {
 
     private int id;
 
-
     private String title;
 
 

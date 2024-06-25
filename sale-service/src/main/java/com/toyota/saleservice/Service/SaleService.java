@@ -32,6 +32,7 @@ public interface SaleService {
 
     SaleResponse getSaleById(int saleId);
 
+
     //ResponseEntity<byte[]> generatePdfById(int saleId) throws DocumentException;
 
 }
