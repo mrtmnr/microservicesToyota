@@ -20,7 +20,6 @@ public interface SaleService {
 
     Sale findById(int id);
 
-
     List<SaleResponse> sortSaleByField(String field);
 
     List<SaleResponse> getPaginatedSales(int offset, int pageSize);

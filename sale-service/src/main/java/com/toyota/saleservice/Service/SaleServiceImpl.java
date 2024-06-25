@@ -171,11 +171,24 @@ public class SaleServiceImpl implements SaleService {
                 .build();
 
     }
-    
 
     @Override
     public List<SaleResponse> sortSaleByField(String field) {
-        List<Sale>sales= saleRepository.findAll(Sort.by(Sort.Direction.ASC,field));
+
+        List<Sale>sales=new ArrayList<>();
+
+
+
+        if(field.equals("totalPrice")){
+            log.info("metodda");
+            sales= saleRepository.findAllOrderByCheckoutTotalPriceAsc();
+
+        }
+        else{
+            sales= saleRepository.findAll(Sort.by(Sort.Direction.ASC,field));
+        }
+
+
         return sales.stream().map(this::mapToSaleResponse).toList();
     }
 

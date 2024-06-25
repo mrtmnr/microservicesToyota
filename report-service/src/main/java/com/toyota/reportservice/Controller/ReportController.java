@@ -46,4 +46,32 @@ public class ReportController {
 
 
 
+    @GetMapping("/sortSales/{field}")
+    public List<SaleResponse>sortSales(@PathVariable String field){
+
+        return saleProxy.sortSales(field);
+
+    }
+
+    @GetMapping("/paginateSales/{offset}/{pageSize}")
+    public List<SaleResponse> paginateSales(@PathVariable int offset, @PathVariable int pageSize){
+
+        return saleProxy.paginateSales(offset,pageSize);
+
+
+    }
+
+
+    @GetMapping("/paginateAndSortSales/{offset}/{pageSize}/{field}")
+    public List<SaleResponse> paginateAndSortSales(@PathVariable int offset, @PathVariable int pageSize,@PathVariable String field){
+
+        return saleProxy.paginateAndSortSales(offset,pageSize,field);
+
+
+    }
+
+
+
+
+
 }

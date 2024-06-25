@@ -23,5 +23,19 @@ public interface SaleProxy {
     public List<SaleResponse> getAllSales(@RequestParam Optional<String> keyword);
 
 
+    @GetMapping("/sale/sort/{field}")
+    public List<SaleResponse>sortSales(@PathVariable String field);
+
+
+    @GetMapping("/sale/paginate/{offset}/{pageSize}")
+    public List<SaleResponse> paginateSales(@PathVariable int offset, @PathVariable int pageSize);
+
+
+
+
+    @GetMapping("/sale/paginateAndSort/{offset}/{pageSize}/{field}")
+    public List<SaleResponse> paginateAndSortSales(@PathVariable int offset, @PathVariable int pageSize,@PathVariable String field);
+
+
 
 }

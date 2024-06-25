@@ -90,7 +90,6 @@ public class SaleController {
 
         return saleService.getPaginatedSales(offset,pageSize);
 
-
     }
 
 
