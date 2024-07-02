@@ -97,6 +97,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         //map.put("/product/",List.of("MANAGER","ADMIN","CASHIER"));
         map.put("/sale/",List.of("CASHIER"));
         map.put("/report/",List.of("MANAGER"));
+        map.put("/manage/",List.of("ADMIN"));
+
 
 
        return map;

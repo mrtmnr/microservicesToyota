@@ -28,6 +28,13 @@ spring:
           filters:
             - name: AuthenticationFilter
 
+        - id: management-service
+          uri: lb://MANAGEMENT-SERVICE
+          predicates:
+            - Path=/manage/**
+          filters:
+            - name: AuthenticationFilter
+
 
 
   application:

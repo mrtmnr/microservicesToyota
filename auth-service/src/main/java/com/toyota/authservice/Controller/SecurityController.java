@@ -11,6 +11,7 @@ import com.toyota.authservice.Repository.RoleRepository;
 import com.toyota.authservice.Repository.UserRepository;
 import com.toyota.authservice.Security.Services.UserDetailsImpl;
 import com.toyota.authservice.Security.jwt.JwtUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
+@Slf4j
 public class SecurityController {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -66,23 +68,21 @@ public class SecurityController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
+    public String registerUser(@RequestBody SignupRequest signUpRequest) {
+
+
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+            return "Error: Username is already taken!";
         }
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
+            return "Error: Email is already in use!";
         }
 
 
         //check whether the roles are expected
         if (signUpRequest.getRole().stream().noneMatch(List.of("admin","cashier","manager")::contains)){
-            throw (new RuntimeException("Error: Role is not found."));
+           return  "Error: Role is not found.";
         }
         System.out.print("User will be created shortly!");
         // Create new user's account
@@ -92,13 +92,21 @@ public class SecurityController {
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
-/*
+
         if (strRoles == null) {
-            Role userRole = roleRepository.findByName(EnumRole.USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
+
+                   return  "Error: Role is not selected.";
+
            }
- */
+
+
+        boolean match= strRoles.stream().allMatch(r->r.equals("cashier")||r.equals("admin")||r.equals("manager"));
+
+        if (!match){
+
+            return "Error: invalid Role.";
+        }
+
 
             strRoles.forEach(role -> {
                 switch (role) {
@@ -124,7 +132,7 @@ public class SecurityController {
         user.setRole(roles);
         userRepository.save(user);
 
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return "User registered successfully!";
     }
 }
 
