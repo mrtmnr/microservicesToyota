@@ -80,10 +80,6 @@ public class SecurityController {
         }
 
 
-        //check whether the roles are expected
-        if (signUpRequest.getRole().stream().noneMatch(List.of("admin","cashier","manager")::contains)){
-           return  "Error: Role is not found.";
-        }
         System.out.print("User will be created shortly!");
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),
@@ -99,7 +95,7 @@ public class SecurityController {
 
            }
 
-
+        //check whether roles are expected
         boolean match= strRoles.stream().allMatch(r->r.equals("cashier")||r.equals("admin")||r.equals("manager"));
 
         if (!match){
