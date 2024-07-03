@@ -67,7 +67,7 @@ public class SecurityController {
     }
 
     @PostMapping("/signup")
-    public String registerUser(@RequestParam SignupRequest signUpRequest,@RequestParam Optional<Integer>id) {
+    public String registerUser(@RequestBody SignupRequest signUpRequest,@RequestParam Optional<Integer>id) {
 
 
         boolean usernameCheck=true;
@@ -78,24 +78,25 @@ public class SecurityController {
 
             int userId=id.get();
 
-            Optional<User> updateUser=userRepository.findById(userId);
-            if (updateUser.isPresent()){
+            Optional<User> matchedUser=userRepository.findById(userId);
+            if (matchedUser.isPresent()){
 
                 if (signUpRequest.getEmail()==null){
 
-                    signUpRequest.setEmail(updateUser.get().getEmail());
+                    signUpRequest.setEmail(matchedUser.get().getEmail());
                     emailCheck=false;
 
                 }
                 if (signUpRequest.getUsername()==null){
 
-                    signUpRequest.setUsername(updateUser.get().getUsername());
+                    signUpRequest.setUsername(matchedUser.get().getUsername());
                     usernameCheck=false;
 
                 }
+
                 if (signUpRequest.getPassword()==null){
 
-                    signUpRequest.setPassword(updateUser.get().getPassword());
+                    signUpRequest.setPassword(matchedUser.get().getPassword());
 
                 }
                 else {
@@ -104,12 +105,16 @@ public class SecurityController {
                 if (signUpRequest.getRole()==null){
 
 
-                    signUpRequest.setRole(updateUser.get().getRole().stream().map(r->r.getName().toString()).collect(Collectors.toSet()));
+                    signUpRequest.setRole(matchedUser.get().getRole().stream().map(r->r.getName().toString()).collect(Collectors.toSet()));
 
                 }
 
             }
 
+        }
+        else {
+
+            signUpRequest.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         }
 
         if (userRepository.existsByUsername(signUpRequest.getUsername())&&usernameCheck) {
@@ -123,6 +128,7 @@ public class SecurityController {
 
         log.info("user will be created shortly!");
         // Create new user's account
+        log.info("signupRequest password: "+ signUpRequest.getPassword());
         User user = new User(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
                 signUpRequest.getPassword());

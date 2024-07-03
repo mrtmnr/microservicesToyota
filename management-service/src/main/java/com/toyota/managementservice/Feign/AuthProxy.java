@@ -4,6 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
@@ -14,7 +15,7 @@ public interface AuthProxy {
 
 
     @PostMapping("/auth/signup")
-    public String registerUser(@RequestParam SignupRequest signUpRequest,@RequestParam Optional<Integer>id);
+    public String registerUser(@RequestBody SignupRequest signUpRequest, @RequestParam Optional<Integer>id);
 
 
 
