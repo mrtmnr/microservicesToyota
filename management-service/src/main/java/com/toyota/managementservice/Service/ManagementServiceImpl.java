@@ -67,6 +67,21 @@ public class ManagementServiceImpl implements ManagementService{
 
     }
 
+    @Override
+    public ResponseEntity<?> deleteUserById(int id) {
+
+        String response= authProxy.deleteUserById(id);
+
+        if (response.startsWith("Error")){
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        return ResponseEntity
+                .ok(response);
+
+
+    }
+
 
 }
 

@@ -2,7 +2,6 @@ package com.toyota.authservice.Controller;
 
 import com.toyota.authservice.DTOs.JwtResponse;
 import com.toyota.authservice.DTOs.LoginRequest;
-import com.toyota.authservice.DTOs.MessageResponse;
 import com.toyota.authservice.DTOs.SignupRequest;
 import com.toyota.authservice.Entity.Role;
 import com.toyota.authservice.Entity.User;
@@ -11,7 +10,7 @@ import com.toyota.authservice.Repository.RoleRepository;
 import com.toyota.authservice.Repository.UserRepository;
 import com.toyota.authservice.Security.Services.UserDetailsImpl;
 import com.toyota.authservice.Security.jwt.JwtUtils;
-import lombok.ToString;
+import com.toyota.authservice.Service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,11 +29,12 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/auth")
 @Slf4j
-public class SecurityController {
+public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
@@ -182,6 +182,23 @@ public class SecurityController {
         }
 
         return "User registered successfully!";
+    }
+
+    @DeleteMapping("/deleteUser")
+    public String deleteUserById(@RequestParam("id") int id){
+
+        log.info("deleteUserById triggered");
+
+        if (userRepository.existsById(id)){
+
+            userRepository.deleteById(id);
+
+            return "User deleted successfully.";
+        }
+
+        return "Error: user not found with given id.";
+
+
     }
 
 

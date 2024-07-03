@@ -10,4 +10,6 @@ public interface ManagementService {
 
 
     ResponseEntity<?> updateUser(SignupRequest signupRequest, int id);
+
+    ResponseEntity<?> deleteUserById(int id);
 }

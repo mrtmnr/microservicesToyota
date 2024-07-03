@@ -57,6 +57,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("auth/signin/**").permitAll()
                             .requestMatchers("auth/signup/**").permitAll()
+                            .requestMatchers("auth/deleteUser/**").permitAll()
                             .anyRequest().authenticated();
                 })
                 .httpBasic(Customizer.withDefaults());

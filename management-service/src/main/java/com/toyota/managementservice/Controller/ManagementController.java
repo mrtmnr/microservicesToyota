@@ -31,6 +31,18 @@ public class ManagementController {
 
     }
 
+    @DeleteMapping("/deleteUserById/{id}")
+    public ResponseEntity<?> deleteUserById(@PathVariable int id){
+
+        return managementService.deleteUserById(id);
+
+    }
+
+
+
+
+
+
 
 
 
