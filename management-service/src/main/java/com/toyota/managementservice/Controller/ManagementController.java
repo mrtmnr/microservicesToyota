@@ -23,8 +23,14 @@ public class ManagementController {
 
         return managementService.addUser(signupRequest);
 
+    }
+    @PutMapping("/updateUser/{userId}")
+    public ResponseEntity<?> updateUser(@RequestBody SignupRequest signupRequest,@PathVariable int userId){
+
+        return managementService.updateUser(signupRequest,userId);
 
     }
+
 
 
 

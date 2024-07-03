@@ -2,6 +2,7 @@ package com.toyota.authservice.DTOs;
 
 import lombok.Data;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Data

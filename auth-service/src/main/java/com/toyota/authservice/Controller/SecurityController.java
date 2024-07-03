@@ -11,6 +11,7 @@ import com.toyota.authservice.Repository.RoleRepository;
 import com.toyota.authservice.Repository.UserRepository;
 import com.toyota.authservice.Security.Services.UserDetailsImpl;
 import com.toyota.authservice.Security.jwt.JwtUtils;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -68,25 +67,69 @@ public class SecurityController {
     }
 
     @PostMapping("/signup")
-    public String registerUser(@RequestBody SignupRequest signUpRequest) {
+    public String registerUser(@RequestParam SignupRequest signUpRequest,@RequestParam Optional<Integer>id) {
 
 
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+        boolean usernameCheck=true;
+        boolean emailCheck=true;
+
+
+        if(id.isPresent()){
+
+            int userId=id.get();
+
+            Optional<User> updateUser=userRepository.findById(userId);
+            if (updateUser.isPresent()){
+
+                if (signUpRequest.getEmail()==null){
+
+                    signUpRequest.setEmail(updateUser.get().getEmail());
+                    emailCheck=false;
+
+                }
+                if (signUpRequest.getUsername()==null){
+
+                    signUpRequest.setUsername(updateUser.get().getUsername());
+                    usernameCheck=false;
+
+                }
+                if (signUpRequest.getPassword()==null){
+
+                    signUpRequest.setPassword(updateUser.get().getPassword());
+
+                }
+                else {
+                    signUpRequest.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+                }
+                if (signUpRequest.getRole()==null){
+
+
+                    signUpRequest.setRole(updateUser.get().getRole().stream().map(r->r.getName().toString()).collect(Collectors.toSet()));
+
+                }
+
+            }
+
+        }
+
+        if (userRepository.existsByUsername(signUpRequest.getUsername())&&usernameCheck) {
             return "Error: Username is already taken!";
         }
 
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+        if (userRepository.existsByEmail(signUpRequest.getEmail())&&emailCheck) {
             return "Error: Email is already in use!";
         }
 
 
-        System.out.print("User will be created shortly!");
+        log.info("user will be created shortly!");
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
-                passwordEncoder.encode(signUpRequest.getPassword()));
+                signUpRequest.getPassword());
+        id.ifPresent(user::setId);
 
         Set<String> strRoles = signUpRequest.getRole();
+        log.info("roles: "+ strRoles);
         Set<Role> roles = new HashSet<>();
 
         if (strRoles == null) {
@@ -96,7 +139,7 @@ public class SecurityController {
            }
 
         //check whether roles are expected
-        boolean match= strRoles.stream().allMatch(r->r.equals("cashier")||r.equals("admin")||r.equals("manager"));
+        boolean match= strRoles.stream().allMatch(r->r.equals("CASHIER")||r.equals("ADMIN")||r.equals("MANAGER"));
 
         if (!match){
 
@@ -106,13 +149,13 @@ public class SecurityController {
 
             strRoles.forEach(role -> {
                 switch (role) {
-                    case "admin":
+                    case "ADMIN":
                         Role adminRole = roleRepository.findByName(EnumRole.ADMIN)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(adminRole);
 
                         break;
-                    case "cashier":
+                    case "CASHIER":
                         Role cashierRole = roleRepository.findByName(EnumRole.CASHIER)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(cashierRole);
@@ -128,7 +171,16 @@ public class SecurityController {
         user.setRole(roles);
         userRepository.save(user);
 
+        if(id.isPresent()){
+            return "User updated successfully!";
+        }
+
         return "User registered successfully!";
     }
+
+
+
+
+
 }
 

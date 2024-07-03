@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Slf4j
 public class ManagementServiceImpl implements ManagementService{
@@ -21,11 +23,12 @@ public class ManagementServiceImpl implements ManagementService{
     @Override
     public ResponseEntity<?> addUser(SignupRequest signupRequest) {
 
-        String response= authProxy.registerUser(signupRequest);
+        String response= authProxy.registerUser(signupRequest, Optional.empty());
 
-        log.info("response: {}",response);
+        //log.info("response: {}",response);
 
-        if (response.equals("User registered successfully!")){
+        if (response.equals("User registered successfully!"))
+        {
 
 
             return ResponseEntity.ok(response);
@@ -40,4 +43,32 @@ public class ManagementServiceImpl implements ManagementService{
 
 
     }
+
+    @Override
+    public ResponseEntity<?> updateUser(SignupRequest signupRequest, int id){
+
+        String response= authProxy.registerUser(signupRequest,Optional.of(id));
+
+
+
+        if (response.equals("User updated successfully!"))
+        {
+
+
+            return ResponseEntity.ok(response);
+
+
+        }
+
+
+        return ResponseEntity
+                .badRequest()
+                .body(response);
+
+    }
+
+
 }
+
+
+
