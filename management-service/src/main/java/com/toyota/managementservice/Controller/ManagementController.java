@@ -50,20 +50,19 @@ public class ManagementController {
 
     }
 
-
     @GetMapping("/sortUserByField/{field}")
     public List<UserResponse> sortUserByField(@PathVariable String field) {
         return managementService.sortUserByField(field);
     }
 
-    @GetMapping("/paginateUsers")
-    public List<UserResponse> getPaginatedUsers(@RequestParam int offset, @RequestParam int pageSize) {
+    @GetMapping("/paginateUsers/{offset}/{pageSize}")
+    public List<UserResponse> getPaginatedUsers(@PathVariable int offset, @PathVariable int pageSize) {
         return managementService.getPaginatedUsers(offset,pageSize);
     }
 
 
-    @GetMapping("/paginateAndSortUsers")
-    public List<UserResponse>getPaginatedAndSortedUsers(@RequestParam int offset,@RequestParam int pageSize,@RequestParam String field){
+    @GetMapping("/paginateAndSortUsers/{offset}/{pageSize}/{field}")
+    public List<UserResponse>getPaginatedAndSortedUsers(@PathVariable int offset,@PathVariable int pageSize,@PathVariable String field){
 
         return managementService.getPaginatedAndSortedUsers(offset,pageSize,field);
 
