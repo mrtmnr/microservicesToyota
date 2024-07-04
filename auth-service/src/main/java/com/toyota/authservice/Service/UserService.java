@@ -20,11 +20,11 @@ public interface UserService {
 
     List<UserResponse>findAll(Optional<String> keyword);
 
-    List<User> sortUserByField(String field);
+    List<UserResponse> sortUserByField(String field);
 
-    List<User> getPaginatedUsers(int offset, int pageSize);
+    List<UserResponse> getPaginatedUsers(int offset, int pageSize);
 
-    List<User>getPaginatedAndSortedUsers(int offset,int pageSize,String field);
+    List<UserResponse>getPaginatedAndSortedUsers(int offset,int pageSize,String field);
 
     void deleteByUsername(DeleteUserDTO deleteUserDTO);
 }

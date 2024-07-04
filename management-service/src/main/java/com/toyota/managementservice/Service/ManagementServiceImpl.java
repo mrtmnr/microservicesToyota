@@ -1,12 +1,14 @@
 package com.toyota.managementservice.Service;
 
 import com.toyota.managementservice.DTOs.SignupRequest;
+import com.toyota.managementservice.DTOs.UserResponse;
 import com.toyota.managementservice.Feign.AuthProxy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -80,6 +82,26 @@ public class ManagementServiceImpl implements ManagementService{
                 .ok(response);
 
 
+    }
+
+    @Override
+    public List<UserResponse> getAllUsers(Optional<String> keyword) {
+        return authProxy.getUsers(keyword);
+    }
+
+    @Override
+    public List<UserResponse> sortUserByField(String field) {
+        return authProxy.sortUserByField(field);
+    }
+
+    @Override
+    public List<UserResponse> getPaginatedUsers(int offset, int pageSize) {
+        return authProxy.getPaginatedUsers(offset,pageSize);
+    }
+
+    @Override
+    public List<UserResponse> getPaginatedAndSortedUsers(int offset, int pageSize, String field) {
+        return authProxy.getPaginatedAndSortedUsers(offset,pageSize,field);
     }
 
 

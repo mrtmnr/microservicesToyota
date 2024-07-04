@@ -3,6 +3,7 @@ package com.toyota.authservice.Controller;
 import com.toyota.authservice.DTOs.JwtResponse;
 import com.toyota.authservice.DTOs.LoginRequest;
 import com.toyota.authservice.DTOs.SignupRequest;
+import com.toyota.authservice.DTOs.UserResponse;
 import com.toyota.authservice.Entity.Role;
 import com.toyota.authservice.Entity.User;
 import com.toyota.authservice.Enum.EnumRole;
@@ -10,9 +11,12 @@ import com.toyota.authservice.Repository.RoleRepository;
 import com.toyota.authservice.Repository.UserRepository;
 import com.toyota.authservice.Security.Services.UserDetailsImpl;
 import com.toyota.authservice.Security.jwt.JwtUtils;
+
 import com.toyota.authservice.Service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,6 +39,8 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserService userService;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
@@ -198,6 +204,36 @@ public class AuthController {
 
         return "Error: user not found with given id.";
 
+
+    }
+
+    @GetMapping("/listUsers")
+    public List<UserResponse> getUsers(@RequestParam Optional<String> keyword){
+
+        if (keyword.isPresent()){
+            log.info("search keyword: {}",keyword);
+        }
+
+        return userService.findAll(keyword);
+
+    }
+
+
+    @GetMapping("/sortUserByField")
+    public List<UserResponse> sortUserByField(@RequestParam String field) {
+        return userService.sortUserByField(field);
+    }
+
+    @GetMapping("/paginateUsers")
+    public List<UserResponse> getPaginatedUsers(@RequestParam int offset, @RequestParam int pageSize) {
+        return userService.getPaginatedUsers(offset,pageSize);
+    }
+
+
+    @GetMapping("/paginateAndSortUsers")
+    public List<UserResponse>getPaginatedAndSortedUsers(@RequestParam int offset,@RequestParam int pageSize,@RequestParam String field){
+
+        return userService.getPaginatedAndSortedUsers(offset,pageSize,field);
 
     }
 

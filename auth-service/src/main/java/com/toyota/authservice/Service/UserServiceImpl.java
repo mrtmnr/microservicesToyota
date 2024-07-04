@@ -73,20 +73,23 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public List<User> sortUserByField(String field) {
-        return userRepository.findAll(Sort.by(Sort.Direction.ASC,field));
+    public List<UserResponse> sortUserByField(String field) {
+        List<User>users= userRepository.findAll(Sort.by(Sort.Direction.ASC,field));
+        return users.stream().map(this::mapToUserResponse).toList();
     }
 
     @Override
-    public List<User> getPaginatedUsers(int offset, int pageSize) {
-        return userRepository.findAll(PageRequest.of(offset,pageSize)).get().toList();
+    public List<UserResponse> getPaginatedUsers(int offset, int pageSize) {
+        List<User>users=userRepository.findAll(PageRequest.of(offset,pageSize)).get().toList();
+        return users.stream().map(this::mapToUserResponse).toList();
     }
 
 
-    //TEST ET
-    public List<User>getPaginatedAndSortedUsers(int offset,int pageSize,String field){
+    //TEST IT
+    public List<UserResponse>getPaginatedAndSortedUsers(int offset,int pageSize,String field){
 
-        return userRepository.findAll(PageRequest.of(offset,pageSize).withSort(Sort.by(Sort.Direction.ASC,field))).get().toList();
+        List<User>users=userRepository.findAll(PageRequest.of(offset,pageSize).withSort(Sort.by(Sort.Direction.ASC,field))).get().toList();
+        return users.stream().map(this::mapToUserResponse).toList();
 
     }
 
