@@ -14,10 +14,9 @@ public class Category {
     private int id;
 
     @OneToMany(mappedBy = "category",fetch = FetchType.LAZY)
-    @JsonManagedReference
     private List<Product>products;
 
-    @Column(name = "title")
+    @Column(name = "title",length = 55)
     private String title;
 
     public Category() {

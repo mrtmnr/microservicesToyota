@@ -17,19 +17,18 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
-    @JsonBackReference
     private Category category;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.DETACH,CascadeType.PERSIST,CascadeType.REFRESH})
     @JoinColumn(name = "campaign_id")
     private Campaign campaign;
 
     @Column(name = "is_deleted")
     private Boolean isDeleted=Boolean.FALSE;
 
-    @Column(name = "title")
+    @Column(name = "title",length = 55)
     private String title;
     @Column(name = "price")
     private float price;

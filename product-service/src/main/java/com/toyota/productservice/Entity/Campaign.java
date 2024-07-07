@@ -11,17 +11,17 @@ public class Campaign {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "title")
+    @Column(name = "title",length = 100)
     private String title;
 
     @Column(name = "discount_percentage")
     private float discountPercentage;
 
     @Column(name = "is_percentage_active")
-    private boolean isPercentageActive;
+    private boolean isPercentageActive=Boolean.FALSE;
 
     @Column(name ="is_one_free_active")
-    private boolean isOneFreeActive;
+    private boolean isOneFreeActive=Boolean.FALSE;
 
     public Campaign() {
     }
