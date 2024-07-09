@@ -8,6 +8,8 @@ import com.toyota.productservice.DTOs.ProductDTO;
 import com.toyota.productservice.Entity.Campaign;
 import com.toyota.productservice.Entity.Category;
 import com.toyota.productservice.Entity.Product;
+import com.toyota.productservice.Repository.CampaignRepository;
+import com.toyota.productservice.Repository.CategoryRepository;
 import com.toyota.productservice.Repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -24,15 +26,14 @@ public class ProductServiceImpl implements ProductService {
 
     private ProductRepository productRepository;
 
-    private CategoryService categoryService;
+    private CategoryRepository categoryRepository;
 
-    private CampaignService campaignService;
+    private CampaignRepository campaignRepository;
 
-
-    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService, CampaignService campaignService) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, CampaignRepository campaignRepository) {
         this.productRepository = productRepository;
-        this.categoryService = categoryService;
-        this.campaignService = campaignService;
+        this.categoryRepository = categoryRepository;
+        this.campaignRepository = campaignRepository;
     }
 
     @Override
@@ -112,6 +113,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public String deleteById(int id) {
+        if (!productRepository.existsById(id)){
+
+            throw new RuntimeException("There is no product with given id: "+id);
+        }
+
         productRepository.deleteById(id);
         return "product with id "+id+" is deleted successfully.";
 
@@ -129,6 +135,7 @@ public class ProductServiceImpl implements ProductService {
 
 
 
+    @Override
     public List<Product>getPaginatedAndSortedProducts(int offset,int pageSize,String field){
 
         return productRepository.findAll(PageRequest.of(offset,pageSize).withSort(Sort.by(Sort.Direction.ASC,field))).get().toList();
@@ -156,15 +163,26 @@ public class ProductServiceImpl implements ProductService {
     public String addProduct(ProductRequest productRequest) {
 
         String categoryName=productRequest.getCategory();
-        Category category=categoryService.findByTitle(categoryName);
 
+        Optional<Category> category=categoryRepository.findByTitle(categoryName);
+
+        if (category.isEmpty()){
+
+            throw new RuntimeException(categoryName+"is invalid category !");
+        }
 
         Product product=new Product(productRequest.getTitle(),productRequest.getPrice(),productRequest.getStock());
-        product.setCategory(category);
+        product.setCategory(category.get());
 
         if (productRequest.getCampaignId()!=0){
-            Campaign campaign=campaignService.findById(productRequest.getCampaignId());
-            product.setCampaign(campaign);
+            Optional<Campaign> campaign=campaignRepository.findById(productRequest.getCampaignId());
+
+            if (campaign.isEmpty()){
+
+                throw new RuntimeException(productRequest.getCampaignId()+"is invalid campaignId!");
+            }
+
+            product.setCampaign(campaign.get());
         }
 
         productRepository.save(product);
@@ -176,7 +194,7 @@ public class ProductServiceImpl implements ProductService {
 
 
 
-    private ProductResponse mapToProductResponse(Product product) {
+    public ProductResponse mapToProductResponse(Product product) {
 
         String campaignName=null;
 
@@ -197,7 +215,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-    private ProductDTO mapToProductDTO(Product product) {
+    public ProductDTO mapToProductDTO(Product product) {
 
         CampaignDTO campaignDTO=null;
 

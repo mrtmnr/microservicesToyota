@@ -12,8 +12,6 @@ public interface ProductRepository extends JpaRepository<Product,Integer> {
 
     Optional<Product> findProductByTitle(String title);
 
-   // @Query("SELECT p FROM Product p WHERE CONCAT(p.title, ' ', p.price, ' ', p.stock, ' ', p.campaign.title, ' ', p.category.title) LIKE %?1%")
-    //List<Product> filter(String keyword);
 
     @Query("SELECT p FROM Product p WHERE " +
             "LOWER(CONCAT(p.title, ' ', p.price, ' ', p.stock, ' ', p.category.title)) " +

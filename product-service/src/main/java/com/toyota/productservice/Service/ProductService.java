@@ -36,4 +36,8 @@ public interface ProductService {
     List<ProductDTO> getProductListByIds(List<Integer> productIds);
 
     void updateStock(List<ProductResponse> products);
+
+    ProductResponse mapToProductResponse(Product product);
+
+    ProductDTO mapToProductDTO(Product product);
 }

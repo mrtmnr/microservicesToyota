@@ -72,4 +72,5 @@ public class Campaign {
     public void setOneFreeActive(boolean oneFreeActive) {
         isOneFreeActive = oneFreeActive;
     }
+
 }
