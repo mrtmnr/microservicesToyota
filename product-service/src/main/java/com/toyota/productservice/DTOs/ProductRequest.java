@@ -17,5 +17,5 @@ public class ProductRequest {
 
     private int stock;
 
-    private int campaignId;
+    private Integer campaignId;
 }

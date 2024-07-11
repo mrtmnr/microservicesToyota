@@ -168,13 +168,13 @@ public class ProductServiceImpl implements ProductService {
 
         if (category.isEmpty()){
 
-            throw new RuntimeException(categoryName+"is invalid category !");
+            throw new RuntimeException(categoryName+" is invalid category !");
         }
 
         Product product=new Product(productRequest.getTitle(),productRequest.getPrice(),productRequest.getStock());
         product.setCategory(category.get());
 
-        if (productRequest.getCampaignId()!=0){
+        if (productRequest.getCampaignId()!=null){
             Optional<Campaign> campaign=campaignRepository.findById(productRequest.getCampaignId());
 
             if (campaign.isEmpty()){
