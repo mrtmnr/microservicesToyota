@@ -32,8 +32,8 @@ public class CheckoutServiceImpl implements CheckoutService{
     }
 
     @Override
-    public Checkout getLatestCheckout() {
-        return checkoutRepository.findTopByOrderByIdDesc();
+    public Checkout getLastCheckout() {
+        return checkoutRepository.findLastCheckout();
     }
 
     @Override

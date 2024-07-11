@@ -178,9 +178,8 @@ public class SaleServiceImpl implements SaleService {
         List<Sale>sales=new ArrayList<>();
 
 
-
         if(field.equals("totalPrice")){
-            log.info("metodda");
+
             sales= saleRepository.findAllOrderByCheckoutTotalPriceAsc();
 
         }
@@ -237,7 +236,7 @@ public class SaleServiceImpl implements SaleService {
        // log.info("product: "+product);
 
 
-        Checkout checkout=checkoutService.getLatestCheckout();
+        Checkout checkout=checkoutService.getLastCheckout();
 
 
         if (product.getStock()==0){
@@ -348,7 +347,7 @@ public class SaleServiceImpl implements SaleService {
     public String sell(float totalReceived, String payment, String username) {
 
 
-        Checkout checkout=checkoutService.getLatestCheckout();
+        Checkout checkout=checkoutService.getLastCheckout();
 
         Sale sale=new Sale();
 
@@ -435,64 +434,5 @@ public class SaleServiceImpl implements SaleService {
 
 
 
-/*
-    @Override
-    public ResponseEntity<byte[]> generatePdfById(int saleId) throws DocumentException {
-
-        Sale sale=findById(saleId);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Document document = new Document(PageSize.A6);
-        PdfWriter.getInstance(document, baos);
-        document.open();
-
-        Paragraph title = new Paragraph("Receipt");
-        title.setAlignment(Element.ALIGN_CENTER);
-        document.add(title);
-        document.add(new Paragraph("\n"));
-
-        document.add(new Paragraph("Sale ID: "+saleId));
-        document.add(new Paragraph("Cashier: "+sale.getUser().getUsername()));
-        document.add(new Paragraph("Date:"+ sale.getDate()));
-        document.add(new Paragraph("\n"));
-
-
-        for (Entry e: sale.getEntries()){
-
-            document.add(new Paragraph(" - Product: "+e.getProduct().getTitle()+" | Quantity: "+e.getQuantity()+" | Price: "+e.getProduct().getPrice()));
-
-            Optional<AppliedCampaign> appliedCampaign=Optional.ofNullable(e.getAppliedCampaign());
-
-            if (appliedCampaign.isPresent()){
-                //document.add(new Paragraph("Applied Campaigns:"));
-
-                document.add(new Paragraph(e.getAppliedCampaign().getCampaign().getTitle()+ " | Discount: -"+(e.getProduct().getPrice()*e.getQuantity()-e.getTotalPrice())));
-
-            }
-
-
-        }
-
-        document.add(new Paragraph("Total Price: "+sale.getTotalPrice()));
-        document.add(new Paragraph("Total Received: "+sale.getTotalReceived()));
-        document.add(new Paragraph("Change: "+sale.getChange()));
-        document.add(new Paragraph("\n"));
-
-
-        document.add(new Paragraph("Payment Method: "+sale.getPayment()));
-
-
-        document.close();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("filename", "receipt.pdf");
-        headers.setContentLength(baos.size());
-
-        return new ResponseEntity<>(baos.toByteArray(), headers, HttpStatus.OK);
-
-
-    }
-*/
 
 }

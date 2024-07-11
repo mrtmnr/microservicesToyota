@@ -1,12 +1,9 @@
 package com.toyota.saleservice.Entity;
 
-
 import com.toyota.saleservice.Enum.EnumPayment;
 import jakarta.persistence.*;
-
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+
 
 @Entity
 @Table(name = "sales")
@@ -36,11 +33,11 @@ public class Sale {
     public Sale() {
     }
 
-    public Sale(float totalPrice, float totalReceived, Date date,EnumPayment payment) {
-
+    public Sale(String username, float totalReceived, Date date, EnumPayment payment) {
+        this.username = username;
         this.totalReceived = totalReceived;
         this.date = date;
-        this.payment=payment;
+        this.payment = payment;
     }
 
     public int getId() {
@@ -92,19 +89,6 @@ public class Sale {
     public void setUsername(String username) {
         this.username = username;
     }
-
-    /*
-    public void addEntry(Entry entry){
-
-        if (entries==null){
-            entries=new ArrayList<>();
-        }
-
-        entries.add(entry);
-
-    }
-
-     */
 
     @Override
     public String toString() {

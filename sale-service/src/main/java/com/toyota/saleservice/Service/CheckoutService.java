@@ -11,5 +11,5 @@ public interface CheckoutService {
 
     Checkout findById(int id);
 
-    Checkout getLatestCheckout();
+    Checkout getLastCheckout();
 }

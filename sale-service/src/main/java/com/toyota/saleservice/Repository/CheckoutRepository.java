@@ -8,6 +8,6 @@ public interface CheckoutRepository extends JpaRepository<Checkout,Integer> {
 
 
     @Query("SELECT c FROM Checkout c WHERE c.id = (SELECT MAX(c2.id) FROM Checkout c2)")
-    Checkout findTopByOrderByIdDesc();
+    Checkout findLastCheckout();
 
 }

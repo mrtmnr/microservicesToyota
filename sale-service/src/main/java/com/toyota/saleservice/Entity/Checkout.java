@@ -24,6 +24,10 @@ public class Checkout {
     public Checkout() {
     }
 
+    public Checkout(float totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
     public int getId() {
         return id;
     }
