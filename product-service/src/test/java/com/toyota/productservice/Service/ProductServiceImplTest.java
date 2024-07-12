@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
@@ -32,7 +31,6 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class ProductServiceImplTest {
 
-
     ProductService underTest;
 
     @Mock
@@ -44,8 +42,6 @@ class ProductServiceImplTest {
     @Mock
     CampaignRepository campaignRepository;
 
-    @Captor
-    ArgumentCaptor<Product>productArgumentCaptor;
 
 
     @BeforeEach

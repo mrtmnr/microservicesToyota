@@ -1,21 +1,18 @@
 package com.toyota.saleservice.Service;
-
 import com.toyota.saleservice.DTOs.*;
 import com.toyota.saleservice.Enum.EnumPayment;
 import com.toyota.saleservice.Entity.Checkout;
 import com.toyota.saleservice.Entity.Entry;
 import com.toyota.saleservice.Entity.Sale;
 import com.toyota.saleservice.Feign.ProductProxy;
+import com.toyota.saleservice.Repository.CheckoutRepository;
 import com.toyota.saleservice.Repository.SaleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-
 import org.springframework.stereotype.Service;
-
-
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,18 +24,18 @@ import java.util.Optional;
 @Slf4j
 public class SaleServiceImpl implements SaleService {
 
-    private SaleRepository saleRepository;
+    final private SaleRepository saleRepository;
 
-    private ProductProxy productProxy;
+    final private ProductProxy productProxy;
 
-    private CheckoutService checkoutService;
+    final private CheckoutRepository checkoutRepository;
 
 
     @Autowired
-    public SaleServiceImpl( ProductProxy productProxy,SaleRepository saleRepository, CheckoutService checkoutService) {
+    public SaleServiceImpl( ProductProxy productProxy,SaleRepository saleRepository, CheckoutRepository checkoutRepository) {
         this.saleRepository = saleRepository;
         this.productProxy=productProxy;
-        this.checkoutService = checkoutService;
+        this.checkoutRepository = checkoutRepository;
     }
 
 
@@ -90,23 +87,20 @@ public class SaleServiceImpl implements SaleService {
 
 
 
-
-    private SaleResponse mapToSaleResponse(Sale sale) {
+    @Override
+    public SaleResponse mapToSaleResponse(Sale sale) {
 
 
         List<EntryDTO> entryDTOs =new ArrayList<>();
-
-       // List<AppliedCampaignResponse>appliedCampaignResponses=new ArrayList<>();
 
 
         List<Entry>entries=sale.getCheckout().getEntries();
 
         List<ProductDTO>entryProducts= getProductsFromEntries(entries);
 
-        log.info("entryProduct: "+ entryProducts.get(0));
+        //log.info("entryProduct: "+ entryProducts.get(0));
 
         int index=0;
-
 
         for(Entry entry:entries){
 
@@ -117,15 +111,9 @@ public class SaleServiceImpl implements SaleService {
             String campaignName=null;
 
 
-
-
             if (entry.isCampaignActive()){
                 campaignName=entryProduct.getCampaignDTO().getTitle();
             }
-
-
-
-
 
            EntryDTO entryDTO = EntryDTO.builder()
                     .productName(entryProduct.getTitle())
@@ -140,21 +128,6 @@ public class SaleServiceImpl implements SaleService {
 
            entryDTOs.add(entryDTO);
 
-           /*
-
-            if (entry.isCampaignActive()){
-
-
-              AppliedCampaignResponse appliedCampaignResponse=  AppliedCampaignResponse.builder()
-                        .campaignName(entryProduct.getCampaignDTO().getTitle())
-                        .productName(entryProduct.getTitle())
-                        .discountAmount(entryProduct.getPrice()*entry.getQuantity()-entry.getTotalPrice())
-                        .build();
-
-              appliedCampaignResponses.add(appliedCampaignResponse);
-
-            }
-        */
 
         };
 
@@ -168,6 +141,7 @@ public class SaleServiceImpl implements SaleService {
                 .totalPrice(sale.getCheckout().getTotalPrice())
                 .totalReceived(sale.getTotalReceived())
                 .entryDTOs(entryDTOs)
+                .change(sale.getTotalReceived()-sale.getCheckout().getTotalPrice())
                 .build();
 
     }
@@ -204,7 +178,7 @@ public class SaleServiceImpl implements SaleService {
 
     }
 
-    private List<ProductDTO>getProductsFromEntries(List<Entry>entries){
+    public List<ProductDTO>getProductsFromEntries(List<Entry>entries){
 
         List<Integer>productIds=new ArrayList<>();
 
@@ -215,12 +189,7 @@ public class SaleServiceImpl implements SaleService {
         }
 
 
-
-        List<ProductDTO>productListFromProductService= productProxy.getProductListByIds(productIds);
-
-       // productListFromProductService.forEach(System.out::println);
-
-        return productListFromProductService;
+        return productProxy.getProductListByIds(productIds);
 
 
     }
@@ -233,21 +202,21 @@ public class SaleServiceImpl implements SaleService {
 
         ProductDTO product=productProxy.getProductByTitle(productTitle);
 
-       // log.info("product: "+product);
+        log.info(product+" will be added to checkout!");
 
 
-        Checkout checkout=checkoutService.getLastCheckout();
+        Checkout checkout=checkoutRepository.findLastCheckout();
 
 
         if (product.getStock()==0){
-            throw new RuntimeException("this Product out of stock !");
+            throw new RuntimeException("This product is out of stock !");
         }
-
 
         boolean isProductAlreadyExist=false;
 
         if (checkout.getEntries()!=null){
 
+            log.info("incrementing quantity of product!");
             //if there is a match this means our product is multiple from now on so we just increment the quantity of our existing entry
             Optional<Entry>matchedEntry=checkout.getEntries().stream().filter(e -> e.getProductId()==product.getId()).findFirst();
             if (matchedEntry.isPresent()){
@@ -261,6 +230,7 @@ public class SaleServiceImpl implements SaleService {
         //create new related entry if there is no existing already
         if (!isProductAlreadyExist){
 
+            log.info("creating new entry!");
             Entry entry=new Entry();
             entry.setQuantity(1);
             entry.setProductId(product.getId());
@@ -269,15 +239,14 @@ public class SaleServiceImpl implements SaleService {
         }
 
 
-
         List<Entry>entries=checkout.getEntries();
 
-        List<ProductDTO>entryProducts= getProductsFromEntries(entries);
+        //using productProxy here
+        List<ProductDTO>entryProducts=getProductsFromEntries(entries);
 
         int index=0;
 
         for (Entry entry:entries){
-
 
             ProductDTO entryProduct=entryProducts.get(index);
 
@@ -290,7 +259,6 @@ public class SaleServiceImpl implements SaleService {
                 CampaignDTO campaign1=entryProduct.getCampaignDTO();
                // log.info("Campaign: "+campaign1.getTitle());
                 if (campaign1.isOneFreeActive()){
-
                     float percentage= campaign1.getDiscountPercentage();
                     int buyCount= (int)(100/percentage);
                     int quantity= entry.getQuantity();
@@ -300,10 +268,12 @@ public class SaleServiceImpl implements SaleService {
                         float priceWithCampaign=entryProduct.getPrice()*(entry.getQuantity()-freeCount);
                         entry.setTotalPrice(priceWithCampaign);
                         entry.setCampaignActive(true);
+                        log.info("Enough amount oneFree campaign applied!");
 
                     }
                     else{
                         entry.setTotalPrice(entryProduct.getPrice());
+                        log.info("Insufficient amount for oneFree campaign being applied!");
                     }
 
                 }
@@ -313,6 +283,8 @@ public class SaleServiceImpl implements SaleService {
                     float priceWithCampaign=price*((100-percentage)/100);
                     entry.setTotalPrice(priceWithCampaign);
                     entry.setCampaignActive(true);
+                    log.info("Percentage campaign applied!");
+
                 }
 
             }
@@ -332,7 +304,7 @@ public class SaleServiceImpl implements SaleService {
         checkout.setTotalPrice(checkoutPrice);
 
 
-        checkoutService.save(checkout);
+        checkoutRepository.save(checkout);
 
 
 
@@ -347,12 +319,15 @@ public class SaleServiceImpl implements SaleService {
     public String sell(float totalReceived, String payment, String username) {
 
 
-        Checkout checkout=checkoutService.getLastCheckout();
+        Checkout checkout=checkoutRepository.findLastCheckout();
 
         Sale sale=new Sale();
 
-
         List<Entry>entries=checkout.getEntries();
+
+        if (entries==null){
+            throw new RuntimeException("Checkout is empty!");
+        }
 
 
         float totalPrice=checkout.getTotalPrice();
@@ -401,7 +376,7 @@ public class SaleServiceImpl implements SaleService {
 
         Checkout nextCheckout=new Checkout();
 
-        checkoutService.save(nextCheckout);
+        checkoutRepository.save(nextCheckout);
 
 
         saleRepository.save(sale);
@@ -411,7 +386,7 @@ public class SaleServiceImpl implements SaleService {
     }
 
     @Override
-    public SaleResponse getSaleById(int saleId) {
+    public SaleResponse getSaleResponseBySaleId(int saleId) {
 
         Sale sale=null;
 

@@ -29,9 +29,10 @@ public interface SaleService {
 
     String sell(float totalReceived, String payment,String username);
 
-    SaleResponse getSaleById(int saleId);
+    SaleResponse getSaleResponseBySaleId(int saleId);
 
+    SaleResponse mapToSaleResponse(Sale sale);
 
-    //ResponseEntity<byte[]> generatePdfById(int saleId) throws DocumentException;
+    List<ProductDTO>getProductsFromEntries(List<Entry>entries);
 
 }

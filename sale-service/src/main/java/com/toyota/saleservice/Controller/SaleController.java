@@ -51,7 +51,7 @@ public class SaleController {
     @GetMapping("/getSaleById/{saleId}")
     public SaleResponse getSaleById(@PathVariable int saleId){
 
-        return saleService.getSaleById(saleId);
+        return saleService.getSaleResponseBySaleId(saleId);
 
     }
 
