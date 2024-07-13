@@ -68,7 +68,7 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public Sale findById(int id) {
 
-        Optional<Sale>result=saleRepository.findById(id);;
+        Optional<Sale>result=saleRepository.findById(id);
 
         Sale sale;
 
@@ -129,7 +129,7 @@ public class SaleServiceImpl implements SaleService {
            entryDTOs.add(entryDTO);
 
 
-        };
+        }
 
 
 
@@ -149,7 +149,7 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public List<SaleResponse> sortSaleByField(String field) {
 
-        List<Sale>sales=new ArrayList<>();
+        List<Sale>sales;
 
 
         if(field.equals("totalPrice")){
@@ -217,7 +217,7 @@ public class SaleServiceImpl implements SaleService {
         if (checkout.getEntries()!=null){
 
             log.info("incrementing quantity of product!");
-            //if there is a match this means our product is multiple from now on so we just increment the quantity of our existing entry
+            //if there is a match this means our product is multiple from now on, so we just increment the quantity of our existing entry
             Optional<Entry>matchedEntry=checkout.getEntries().stream().filter(e -> e.getProductId()==product.getId()).findFirst();
             if (matchedEntry.isPresent()){
                 Entry entry= matchedEntry.get();
@@ -295,7 +295,7 @@ public class SaleServiceImpl implements SaleService {
 
             }
 
-        };
+        }
 
 
         float checkoutPrice= (float) checkout.getEntries().stream().mapToDouble(Entry::getTotalPrice).sum();
@@ -366,7 +366,7 @@ public class SaleServiceImpl implements SaleService {
 
             entryProduct.setStock(entryProduct.getStock()-entry.getQuantity());
 
-        };
+        }
 
         //update products in product-service
         productProxy.updateStock(entryProducts);
@@ -388,7 +388,7 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public SaleResponse getSaleResponseBySaleId(int saleId) {
 
-        Sale sale=null;
+        Sale sale;
 
         Optional<Sale>optionalSale=saleRepository.findById(saleId);
 

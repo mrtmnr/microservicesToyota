@@ -374,7 +374,7 @@ class SaleServiceImplTest {
         when(checkoutRepository.findLastCheckout()).thenReturn(checkout);
 
         //when
-        String result=underTest.sell(totalReceived,payment,username);
+        underTest.sell(totalReceived,payment,username);
 
         //then
         verify(productProxy).updateStock(productDTOs);

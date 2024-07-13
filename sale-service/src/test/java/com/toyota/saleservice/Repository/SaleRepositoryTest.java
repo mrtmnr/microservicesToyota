@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -25,8 +26,11 @@ class SaleRepositoryTest {
     @BeforeEach
     void setUp() {
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2024, Calendar.JULY, 5, 12, 0);
+
         Sale sale1=new Sale("mert",200,new Date(), EnumPayment.CARD);
-        Sale sale2=new Sale("merve",111,new Date((new Date().getTime()+3600*1000000)), EnumPayment.CASH);
+        Sale sale2=new Sale("merve",111,new Date(calendar.getTimeInMillis()), EnumPayment.CASH);
 
         Checkout checkout1=new Checkout(192);
         Checkout checkout2=new Checkout(103);
