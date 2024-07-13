@@ -25,19 +25,20 @@ class SaleRepositoryTest {
     @BeforeEach
     void setUp() {
 
-        Sale sale=new Sale("mert",200,new Date(), EnumPayment.CARD);
-        Checkout checkout=new Checkout(192);
-        Entry entry1=new Entry(3,123,true);
-        Entry entry2=new Entry(1,78,false);
-        entry1.setProductId(1);
-        entry2.setProductId(2);
-        List<Entry>entries= Arrays.asList(entry1,entry2);
-        checkout.setEntries(entries);
-        sale.setCheckout(checkout);
+        Sale sale1=new Sale("mert",200,new Date(), EnumPayment.CARD);
+        Sale sale2=new Sale("merve",111,new Date((new Date().getTime()+3600*1000000)), EnumPayment.CASH);
 
-        saleRepository.save(sale);
+        Checkout checkout1=new Checkout(192);
+        Checkout checkout2=new Checkout(103);
+
+
+        sale1.setCheckout(checkout1);
+
+        sale2.setCheckout(checkout2);
+
+        saleRepository.save(sale1);
+        saleRepository.save(sale2);
     }
-
 
 
     @Test
@@ -62,17 +63,17 @@ class SaleRepositoryTest {
     void testFilterSaleByDate(){
 
         //given
-        String year="2024";
+        String day="13";
 
         //when
-        List<Sale> saleList=saleRepository.filter(year);
+        List<Sale> saleList=saleRepository.filter(day);
 
 
         //then
         assertThat(saleList).hasSize(1);
         String stringDate=saleList.get(0).getDate().toString();
         System.out.println("stringDate: "+stringDate);
-        assert (stringDate.contains(year));
+        assert (stringDate.contains(day));
 
     }
 
@@ -128,25 +129,14 @@ class SaleRepositoryTest {
         sale1.setCheckout(checkout);
 
 
-        Sale sale2=new Sale("mert",55,new Date(), EnumPayment.CARD);
-        Checkout checkout2=new Checkout(50);
-        Entry entry3=new Entry(3,25,true);
-        Entry entry4=new Entry(1,29,false);
-        entry3.setProductId(1);
-        entry4.setProductId(2);
-        List<Entry>entries2=Arrays.asList(entry3,entry4);
-        checkout.setEntries(entries2);
-        sale2.setCheckout(checkout2);
-
         saleRepository.save(sale1);
-        saleRepository.save(sale2);
 
         //when
         List<Sale>sales=saleRepository.findAllOrderByCheckoutTotalPriceAsc();
 
         //then
-        assertThat(sales.get(0).getCheckout().getTotalPrice()).isEqualTo(50.0f);
-        assertThat(sales.get(1).getCheckout().getTotalPrice()).isEqualTo(100.0f);
+        assertThat(sales.get(0).getCheckout().getTotalPrice()).isEqualTo(100f);
+        assertThat(sales.get(1).getCheckout().getTotalPrice()).isEqualTo(103f);
         assertThat(sales.get(2).getCheckout().getTotalPrice()).isEqualTo(192.0f);
 
 
