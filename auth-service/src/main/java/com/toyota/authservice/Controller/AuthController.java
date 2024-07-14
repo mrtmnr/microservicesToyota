@@ -184,10 +184,10 @@ public class AuthController {
         userRepository.save(user);
 
         if(id.isPresent()){
-            return "User updated successfully!";
+            return "User has been updated successfully!";
         }
 
-        return "User registered successfully!";
+        return "User has been registered successfully!";
     }
 
     @DeleteMapping("/deleteUser")
@@ -199,7 +199,7 @@ public class AuthController {
 
             userRepository.deleteById(id);
 
-            return "User deleted successfully.";
+            return "User has been deleted successfully.";
         }
 
         return "Error: user not found with given id.";
@@ -236,8 +236,6 @@ public class AuthController {
         return userService.getPaginatedAndSortedUsers(offset,pageSize,field);
 
     }
-
-
 
 
 

@@ -47,7 +47,6 @@ public class ManagementController {
 
         return managementService.getAllUsers(keyword);
 
-
     }
 
     @GetMapping("/sortUserByField/{field}")

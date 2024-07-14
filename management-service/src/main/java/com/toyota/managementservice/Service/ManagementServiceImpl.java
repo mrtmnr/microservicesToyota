@@ -29,7 +29,7 @@ public class ManagementServiceImpl implements ManagementService{
 
         //log.info("response: {}",response);
 
-        if (response.equals("User registered successfully!"))
+        if (response.equals("User has been registered successfully!"))
         {
 
 
@@ -52,16 +52,12 @@ public class ManagementServiceImpl implements ManagementService{
         String response= authProxy.registerUser(signupRequest,Optional.of(id));
 
 
-
-        if (response.equals("User updated successfully!"))
+        if (response.equals("User has been updated successfully!"))
         {
-
 
             return ResponseEntity.ok(response);
 
-
         }
-
 
         return ResponseEntity
                 .badRequest()
@@ -80,7 +76,6 @@ public class ManagementServiceImpl implements ManagementService{
 
         return ResponseEntity
                 .ok(response);
-
 
     }
 

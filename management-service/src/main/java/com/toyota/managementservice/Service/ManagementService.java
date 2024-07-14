@@ -10,7 +10,6 @@ import java.util.Optional;
 public interface ManagementService {
     ResponseEntity<?> addUser(SignupRequest signupRequest);
 
-
     ResponseEntity<?> updateUser(SignupRequest signupRequest, int id);
 
     ResponseEntity<?> deleteUserById(int id);
