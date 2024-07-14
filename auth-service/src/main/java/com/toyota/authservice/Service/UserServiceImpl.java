@@ -3,6 +3,7 @@ import com.toyota.authservice.DTOs.DeleteUserDTO;
 import com.toyota.authservice.DTOs.UserResponse;
 import com.toyota.authservice.Entity.User;
 import com.toyota.authservice.Repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
@@ -38,11 +40,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String deleteById(int id) {
-        userRepository.deleteById(id);
-        return "user with id:  "+id+" is deleted successfully.";
+    public String deleteUserById(int id) {
+
+        if (userRepository.existsById(id)){
+
+            userRepository.deleteById(id);
+
+            return "User has been deleted successfully.";
+        }
+
+        return "Error: user not found with given id.";
 
     }
+
 
     @Override
     public List<UserResponse> findAll(Optional<String> keyword) {
@@ -104,7 +114,6 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("user not found with given username! : "+username);
         }
     }
-
 
 
 

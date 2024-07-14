@@ -16,15 +16,16 @@ public interface UserService {
 
     Boolean existsByEmail(String email);
 
-    String deleteById(int id);
+    String deleteUserById(int id);
 
-    List<UserResponse>findAll(Optional<String> keyword);
+    List<UserResponse> findAll(Optional<String> keyword);
 
     List<UserResponse> sortUserByField(String field);
 
     List<UserResponse> getPaginatedUsers(int offset, int pageSize);
 
-    List<UserResponse>getPaginatedAndSortedUsers(int offset,int pageSize,String field);
+    List<UserResponse> getPaginatedAndSortedUsers(int offset, int pageSize, String field);
 
     void deleteByUsername(DeleteUserDTO deleteUserDTO);
+
 }

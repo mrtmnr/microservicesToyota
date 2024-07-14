@@ -1,23 +1,14 @@
 package com.toyota.authservice.Controller;
 
-import com.toyota.authservice.DTOs.JwtResponse;
 import com.toyota.authservice.DTOs.LoginRequest;
 import com.toyota.authservice.DTOs.SignupRequest;
 import com.toyota.authservice.DTOs.UserResponse;
-import com.toyota.authservice.Entity.Role;
-import com.toyota.authservice.Entity.User;
-import com.toyota.authservice.Enum.EnumRole;
-import com.toyota.authservice.Repository.RoleRepository;
-import com.toyota.authservice.Repository.UserRepository;
-import com.toyota.authservice.Security.Services.UserDetailsImpl;
-import com.toyota.authservice.Security.jwt.JwtUtils;
 
 import com.toyota.authservice.Service.AuthService;
 import com.toyota.authservice.Service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -29,15 +20,14 @@ import java.util.*;
 @Slf4j
 public class AuthController {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
+
     private UserService userService;
-    
+
     private AuthService authService;
 
     @Autowired
-    public AuthController(AuthService authService) {
+    public AuthController(UserService userService, AuthService authService) {
+        this.userService = userService;
         this.authService = authService;
     }
 
@@ -56,34 +46,19 @@ public class AuthController {
 
     }
 
-    @DeleteMapping("/deleteUser")
+    @DeleteMapping("/deleteUserById")
     public String deleteUserById(@RequestParam("id") int id){
 
-        log.info("deleteUserById triggered");
-
-        if (userRepository.existsById(id)){
-
-            userRepository.deleteById(id);
-
-            return "User has been deleted successfully.";
-        }
-
-        return "Error: user not found with given id.";
-
+       return userService.deleteUserById(id);
 
     }
 
     @GetMapping("/listUsers")
     public List<UserResponse> getUsers(@RequestParam Optional<String> keyword){
 
-        if (keyword.isPresent()){
-            log.info("search keyword: {}",keyword);
-        }
-
         return userService.findAll(keyword);
 
     }
-
 
     @GetMapping("/sortUserByField")
     public List<UserResponse> sortUserByField(@RequestParam String field) {
