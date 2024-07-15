@@ -16,7 +16,7 @@ public interface UserRepository extends JpaRepository<User,Integer>, JpaSpecific
 
     Boolean existsByEmail(String email);
 
-    @Query("SELECT u FROM User u WHERE CONCAT(u.id, ' ', u.username, ' ', u.email) LIKE %?1%")
+    @Query("SELECT u FROM User u WHERE CONCAT(u.username, ' ', u.email) LIKE %?1%")
     List<User> filter(String keyword);
 
 

@@ -20,7 +20,7 @@ public class Role {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "enum_role")
-    private EnumRole name;
+    private EnumRole enumName;
 
 
     public int getId() {
@@ -31,11 +31,11 @@ public class Role {
         this.id = id;
     }
 
-    public EnumRole getName() {
-        return name;
+    public EnumRole getEnumName() {
+        return enumName;
     }
 
-    public void setName(EnumRole name) {
-        this.name = name;
+    public void setEnumName(EnumRole name) {
+        this.enumName = name;
     }
 }

@@ -22,7 +22,7 @@ public class JwtUtils {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
         //add roles to token
-        List<String>roles=userPrincipal.getAuthorities().stream().map(r->r.toString()).toList();
+        List<String>roles=userPrincipal.getAuthorities().stream().map(Object::toString).toList();
 
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))

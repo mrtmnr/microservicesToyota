@@ -9,11 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import static org.assertj.core.api.Assertions.*;
 
-
 import java.util.List;
 import java.util.Optional;
-
-
 
 @DataJpaTest
 class ProductRepositoryTest {
@@ -24,19 +21,16 @@ class ProductRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        String title= "phone";
 
-        Product product=new Product(title,5,4);
+        Product product=new Product("phone",5,4);
 
         Category category = new Category();
         category.setTitle("Electronics");
-
 
         product.setCategory(category);
 
         productRepository.save(product);
     }
-
 
 
     @Test
@@ -83,7 +77,6 @@ class ProductRepositoryTest {
         assertThat(productList).hasSize(1);
         String stringPrice= String.valueOf(productList.get(0).getPrice());
         assert (stringPrice.contains(price));
-
 
 
     }

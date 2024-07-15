@@ -105,7 +105,7 @@ public class AuthServiceImpl implements AuthService{
                 if (signUpRequest.getRole()==null){
 
 
-                    signUpRequest.setRole(matchedUser.get().getRole().stream().map(r->r.getName().toString()).collect(Collectors.toSet()));
+                    signUpRequest.setRole(matchedUser.get().getRole().stream().map(r->r.getEnumName().toString()).collect(Collectors.toSet()));
 
                 }
 
@@ -156,19 +156,19 @@ public class AuthServiceImpl implements AuthService{
         strRoles.forEach(role -> {
             switch (role) {
                 case "ADMIN":
-                    Role adminRole = roleRepository.findByName(EnumRole.ADMIN)
+                    Role adminRole = roleRepository.findByEnumName(EnumRole.ADMIN)
                             .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                     roles.add(adminRole);
 
                     break;
                 case "CASHIER":
-                    Role cashierRole = roleRepository.findByName(EnumRole.CASHIER)
+                    Role cashierRole = roleRepository.findByEnumName(EnumRole.CASHIER)
                             .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                     roles.add(cashierRole);
 
                     break;
                 default:
-                    Role managerRole = roleRepository.findByName(EnumRole.MANAGER)
+                    Role managerRole = roleRepository.findByEnumName(EnumRole.MANAGER)
                             .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                     roles.add(managerRole);
             }

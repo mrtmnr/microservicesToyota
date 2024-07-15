@@ -1,5 +1,4 @@
 package com.toyota.authservice.Service;
-import com.toyota.authservice.DTOs.DeleteUserDTO;
 import com.toyota.authservice.DTOs.UserResponse;
 import com.toyota.authservice.Entity.User;
 import com.toyota.authservice.Repository.UserRepository;
@@ -24,20 +23,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    @Override
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
-
-    @Override
-    public Boolean existsByUsername(String username) {
-        return userRepository.existsByUsername(username);
-    }
-
-    @Override
-    public Boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
 
     @Override
     public String deleteUserById(int id) {
@@ -55,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public List<UserResponse> findAll(Optional<String> keyword) {
+    public List<UserResponse> getAllUsers(Optional<String> keyword) {
 
         List<User>userList;
 
@@ -70,15 +55,15 @@ public class UserServiceImpl implements UserService {
         return userList.stream().map(this::mapToUserResponse).toList();
     }
 
-    private UserResponse mapToUserResponse(User user) {
+
+    public UserResponse mapToUserResponse(User user) {
 
        return UserResponse.builder()
                 .id(user.getId())
-                .roles(user.getRole().stream().map(role -> role.getName().getRole()).toList())
+                .roles(user.getRole().stream().map(role -> role.getEnumName().getRole()).toList())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .build();
-
     }
 
 
@@ -95,24 +80,11 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    //TEST IT
     public List<UserResponse>getPaginatedAndSortedUsers(int offset,int pageSize,String field){
 
         List<User>users=userRepository.findAll(PageRequest.of(offset,pageSize).withSort(Sort.by(Sort.Direction.ASC,field))).get().toList();
         return users.stream().map(this::mapToUserResponse).toList();
 
-    }
-
-    @Override
-    public void deleteByUsername(DeleteUserDTO deleteUserDTO) {
-        String username=deleteUserDTO.getUsername();
-        Optional<User>user=userRepository.findByUsername(username);
-        if (user.isPresent()){
-            userRepository.deleteById(user.get().getId());
-        }
-        else {
-            throw new RuntimeException("user not found with given username! : "+username);
-        }
     }
 
 

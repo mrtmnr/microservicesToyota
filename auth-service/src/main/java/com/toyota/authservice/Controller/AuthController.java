@@ -56,7 +56,7 @@ public class AuthController {
     @GetMapping("/listUsers")
     public List<UserResponse> getUsers(@RequestParam Optional<String> keyword){
 
-        return userService.findAll(keyword);
+        return userService.getAllUsers(keyword);
 
     }
 
