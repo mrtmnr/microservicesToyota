@@ -1,16 +1,17 @@
 package com.toyota.authservice.Security.jwt;
 
-import com.toyota.authservice.Entity.Role;
+
 import com.toyota.authservice.Security.Services.UserDetailsImpl;
 import io.jsonwebtoken.*;
-import lombok.extern.slf4j.Slf4j;
+
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
+
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.Logger;
+
 import org.springframework.security.core.Authentication;
 import static org.assertj.core.api.Assertions.*;
 
@@ -23,8 +24,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class JwtUtilsTest {
 
-    @Mock
-    private Logger log;
 
     private JwtUtils jwtUtils;
     private String jwtSecret = "testSecret";
@@ -67,6 +66,7 @@ class JwtUtilsTest {
         assertEquals("mert", username);
     }
 
+
     @Test
     public void shouldValidateJwtToken() {
         String validToken = generateTestToken("mert");
@@ -75,10 +75,20 @@ class JwtUtilsTest {
     }
 
     @Test
-    public void shouldNotValidateJwtToken() {
+    public void shouldNotValidateJwtTokenWithSignatureException() {
         String validToken = generateTestToken("mert");
         String invalidToken = validToken.substring(0, validToken.length() - 1);
+        assertFalse(jwtUtils.validateJwtToken(invalidToken));
        // verify(log).error("Error: Invalid JWT token: " + anyString());
+
+    }
+
+    @Test
+    public void shouldNotValidateWithIllegalArgumentException() {
+        String validToken = generateTestToken("mert");
+        String invalidToken = " ";
+        assertFalse(jwtUtils.validateJwtToken(invalidToken));
+        // verify(log).error("Error: Invalid JWT token: " + anyString());
 
     }
     @Test
@@ -86,8 +96,13 @@ class JwtUtilsTest {
         String expiredToken = generateExpiredToken();
         assertFalse(jwtUtils.validateJwtToken(expiredToken));
       //  verify(log).error("Error: JWT token expired: " + anyString());
+    }
 
-
+    @Test
+    public void testTokenWithWrongKey() {
+        String incorrectKey="wrong_key";
+        String token = Jwts.builder().setSubject("mert").signWith(SignatureAlgorithm.HS512, incorrectKey).compact();
+        assertFalse(jwtUtils.validateJwtToken(token));
     }
 
 
@@ -108,5 +123,7 @@ class JwtUtilsTest {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
+
+
 
 }

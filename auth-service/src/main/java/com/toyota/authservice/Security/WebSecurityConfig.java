@@ -1,7 +1,6 @@
 package com.toyota.authservice.Security;
 
 import com.toyota.authservice.Security.Services.UserDetailsServiceImpl;
-import com.toyota.authservice.Security.jwt.AuthEntryPointJwt;
 import com.toyota.authservice.Security.jwt.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -20,12 +19,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 
 @Configuration
-@EnableWebSecurity //(prePostEnabled=true)
+@EnableWebSecurity
 public class WebSecurityConfig {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
-    @Autowired
-    private AuthEntryPointJwt unauthorizeHandler;
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter(){

@@ -7,7 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +40,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             if (validator.isSecured.test(exchange.getRequest())) {
                 //header contains token or not
                 if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                    throw new RuntimeException("missing authorization header");
+                    return handleUnauthorized(exchange, "Missing authorization header !");
                 }
 
                 String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
@@ -43,8 +48,12 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     authHeader = authHeader.substring(7);
 
                 }
-//
-                jwtUtil.validateJwtToken(authHeader);
+
+                boolean isTokenValid = jwtUtil.validateJwtToken(authHeader);
+                if (!isTokenValid) {
+                    return handleUnauthorized(exchange, "Invalid JWT Token");
+                }
+
 
                 //log.info("requiredRolesForServices: {}" , auth.requiredRolesForServices);
 
@@ -87,6 +96,16 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
             return chain.filter(exchange);
         });
+    }
+
+
+    private Mono<Void> handleUnauthorized(ServerWebExchange exchange, String message) {
+        log.error("Unauthorized access: {}", message);
+        ServerHttpResponse response = exchange.getResponse();
+        response.setStatusCode(HttpStatus.UNAUTHORIZED);
+        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+        byte[] bytes = ("{\"error\": \"" + message + "\"}").getBytes();
+        return response.writeWith(Mono.just(response.bufferFactory().wrap(bytes)));
     }
 
 
