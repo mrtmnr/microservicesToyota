@@ -59,6 +59,8 @@ public class AuthServiceImpl implements AuthService{
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword())
         );
 
+        log.info("Sign-in successful !");
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -110,7 +112,9 @@ public class AuthServiceImpl implements AuthService{
                 }
 
             }
-
+            else {
+                throw new RuntimeException("There is no user with given user id !");
+            }
         }
         else {
 
@@ -118,17 +122,17 @@ public class AuthServiceImpl implements AuthService{
         }
 
         if (userRepository.existsByUsername(signUpRequest.getUsername())&&usernameCheck) {
+            log.error("Error: Username is already taken!");
             return "Error: Username is already taken!";
         }
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())&&emailCheck) {
+            log.error("Error: Email is already in use!");
             return "Error: Email is already in use!";
         }
 
-
         log.info("user will be created shortly!");
-        // Create new user's account
-        log.info("signupRequest password: "+ signUpRequest.getPassword());
+
         User user = new User(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
                 signUpRequest.getPassword());
@@ -138,8 +142,9 @@ public class AuthServiceImpl implements AuthService{
         log.info("roles: "+ strRoles);
         Set<Role> roles = new HashSet<>();
 
-        if (strRoles == null) {
+        if (strRoles == null || strRoles.isEmpty()) {
 
+            log.error("Error: Role is not selected.");
             return  "Error: Role is not selected.";
 
         }
@@ -149,6 +154,7 @@ public class AuthServiceImpl implements AuthService{
 
         if (!match){
 
+            log.error("Error: invalid Role.");
             return "Error: invalid Role.";
         }
 
