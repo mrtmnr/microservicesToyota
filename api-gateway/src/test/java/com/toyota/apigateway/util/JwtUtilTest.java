@@ -82,6 +82,7 @@ class JwtUtilsTest {
         String validToken = generateTestToken("mert",roles);
         String invalidToken = validToken.substring(0, validToken.length() - 1);
         assertFalse(jwtUtil.validateJwtToken(invalidToken));
+
     }
 
     @Test
@@ -103,6 +104,7 @@ class JwtUtilsTest {
         assertFalse(jwtUtil.validateJwtToken(token));
     }
 
+
     private String generateExpiredToken() {
         return Jwts.builder()
                 .setSubject("mert")
@@ -110,6 +112,7 @@ class JwtUtilsTest {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
+
 
     private String generateTestToken(String username, List<String>roles) {
         return Jwts.builder()

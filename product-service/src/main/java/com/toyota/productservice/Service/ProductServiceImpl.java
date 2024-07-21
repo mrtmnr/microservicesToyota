@@ -44,8 +44,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO getProductById(int id) {
+        log.info("Fetching product with id: {}", id);
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isEmpty()){
+            log.error("Product retrieval failed. Product not found with id: {}", id);
             throw new RuntimeException("product not found with given id: "+id);
         }
 
@@ -55,7 +57,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> getProductListByIds(List<Integer> productIds) {
+    public List<ProductDTO> getProductListByIds(List<Integer> productIds){
+
+        log.info("Fetching products with ids: {}", productIds);
 
         List<ProductDTO>productWithCampaignDTOS=new ArrayList<>();
 
@@ -68,6 +72,7 @@ public class ProductServiceImpl implements ProductService {
                 productWithCampaignDTOS.add(mapToProductDTO(optionalProduct.get()));
             }
             else {
+                log.error("Product retrieval failed. No product found with id: {}", productId);
                 throw new RuntimeException("no such product with given id: "+productId);
             }
 
@@ -79,17 +84,22 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void updateStock(List<ProductResponse> products) {
+        log.info("Updating stock for products: {}", products.stream().map(ProductResponse::getTitle));
         for (ProductResponse productDTO : products) {
             Product product = productRepository.findById(productDTO.getId())
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
+                    .orElseThrow(() ->{
+                        log.error("Product update failed. Product not found with id: {}", productDTO.getId());
+                        return new RuntimeException("Product not found");
+                    });
             product.setStock(productDTO.getStock());
             productRepository.save(product);
+            log.info("Stock updated for product: {}", productDTO.getTitle());
         }
     }
 
     @Override
     public ProductDTO getProductByTitle(String title) {
-
+        log.info("Fetching product with title: {}", title);
         Optional<Product>result=productRepository.findProductByTitle(title);
 
         Product product;
@@ -98,7 +108,9 @@ public class ProductServiceImpl implements ProductService {
             product= result.get();
         }
         else {
+
             //we didn't find the product
+            log.error("Product retrieval failed. Product not found with title: {}", title);
             throw new RuntimeException("product was not found by title: "+title);
         }
 
@@ -108,13 +120,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void save(Product product) {
+        log.info("Saving product: {}", product);
         productRepository.save(product);
     }
 
     @Override
     public String deleteById(int id) {
+        log.info("Deleting product with id: {}", id);
         if (!productRepository.existsById(id)){
-
+            log.error("Product deletion failed. No product found with id: {}", id);
             throw new RuntimeException("There is no product with given id: "+id);
         }
 
@@ -168,6 +182,7 @@ public class ProductServiceImpl implements ProductService {
 
         if (category.isEmpty()){
 
+            log.error("Product addition failed. Invalid category: {}", categoryName);
             throw new RuntimeException(categoryName+" is invalid category !");
         }
 
@@ -179,6 +194,7 @@ public class ProductServiceImpl implements ProductService {
 
             if (campaign.isEmpty()){
 
+                log.error("Product addition failed. Invalid campaign id: {}", productRequest.getCampaignId());
                 throw new RuntimeException(productRequest.getCampaignId()+"is invalid campaignId!");
             }
 
@@ -186,7 +202,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         productRepository.save(product);
-
+        log.info("Product added: {}", product.getTitle());
         return "product added !";
     }
 
@@ -237,7 +253,7 @@ public class ProductServiceImpl implements ProductService {
                     .build();
         }
 
-        log.info("campaignDTO: {}",campaignDTO);
+        log.debug("campaignDTO: {}",campaignDTO);
 
         return ProductDTO.builder()
                 .id(product.getId())

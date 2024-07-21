@@ -48,7 +48,7 @@ public class ProductController {
     public List<ProductResponse>getAllProducts(@RequestParam Optional<String> keyword){
 
         if (keyword.isPresent()){
-            log.info("search keyword: {}",keyword);
+            log.info("Getting products with search keyword: {}",keyword);
         }
 
 
@@ -68,7 +68,6 @@ public class ProductController {
     public List<Product>sortProducts(@PathVariable String field){
 
         return productService.sortProductByField(field);
-
 
     }
 
