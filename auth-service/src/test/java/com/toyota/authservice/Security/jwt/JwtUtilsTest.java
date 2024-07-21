@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class JwtUtilsTest {
 
-
     private JwtUtils jwtUtils;
     private String jwtSecret = "testSecret";
     private int jwtExpirationMs = 3600000;

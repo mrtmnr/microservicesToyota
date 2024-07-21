@@ -14,6 +14,11 @@ public class JwtUtil {
     private String jwtSecret;
 
 
+    @Value("${sau.app.jwtExpirationMs}")
+    private int jwtExpirationMs;
+
+
+
     public Claims getClaims(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
     }
@@ -40,7 +45,17 @@ public class JwtUtil {
             log.error("Error: malformed Invalid JWT token:  " + e.getMessage());
         }  catch (ExpiredJwtException e){
             log.error("Error: JWT token expired: " + e.getMessage());
+        }catch (IllegalArgumentException e){
+            log.error("Error: JWT String argument is null or empty." + e.getMessage());
         }
         return false;
+    }
+
+    public void setJwtSecret(String jwtSecret) {
+        this.jwtSecret = jwtSecret;
+    }
+
+    public void setJwtExpirationMs(int jwtExpirationMs) {
+        this.jwtExpirationMs = jwtExpirationMs;
     }
 }
