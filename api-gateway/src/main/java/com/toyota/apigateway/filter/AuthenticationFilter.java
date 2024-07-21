@@ -24,10 +24,15 @@ import java.util.Optional;
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
 
-    @Autowired
     private RouteValidator validator;
-    @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    public AuthenticationFilter(RouteValidator validator, JwtUtil jwtUtil) {
+        super(Config.class);
+        this.validator = validator;
+        this.jwtUtil = jwtUtil;
+    }
 
     public AuthenticationFilter() {
         super(Config.class);

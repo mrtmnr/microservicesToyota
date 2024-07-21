@@ -5,7 +5,6 @@ import com.toyota.authservice.Security.Services.UserDetailsImpl;
 import io.jsonwebtoken.*;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
