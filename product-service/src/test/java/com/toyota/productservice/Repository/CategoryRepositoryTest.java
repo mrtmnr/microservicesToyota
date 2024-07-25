@@ -8,8 +8,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.Optional;
 
-
-
 @DataJpaTest
 class CategoryRepositoryTest {
 
@@ -31,7 +29,6 @@ class CategoryRepositoryTest {
         //then
         assertThat(optionalCategory).isPresent();
         assertThat(optionalCategory.get()).isEqualTo(category);
-
 
 
     }
