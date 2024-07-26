@@ -17,7 +17,7 @@ class CheckoutRepositoryTest {
 
 
     @Test
-    public void testFindLastCheckout() {
+    public void shouldReturnLastCheckout() {
 
         //given
         Checkout checkout1 = new Checkout();
