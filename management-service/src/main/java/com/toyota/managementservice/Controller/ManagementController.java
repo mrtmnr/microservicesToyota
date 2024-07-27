@@ -4,6 +4,7 @@ package com.toyota.managementservice.Controller;
 import com.toyota.managementservice.DTOs.SignupRequest;
 import com.toyota.managementservice.DTOs.UserResponse;
 import com.toyota.managementservice.Service.ManagementService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/manage")
+@Slf4j
 public class ManagementController {
 
     private ManagementService managementService;
@@ -44,6 +46,10 @@ public class ManagementController {
 
     @GetMapping("/listUsers")
     public List<UserResponse>users(@RequestParam Optional<String> keyword){
+
+        if (keyword.isPresent()){
+            log.info("getting users with filter keyword: {}",keyword.get());
+        }
 
         return managementService.getAllUsers(keyword);
 
