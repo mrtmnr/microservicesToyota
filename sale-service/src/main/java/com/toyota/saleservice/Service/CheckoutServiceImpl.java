@@ -3,12 +3,14 @@ package com.toyota.saleservice.Service;
 
 import com.toyota.saleservice.Entity.Checkout;
 import com.toyota.saleservice.Repository.CheckoutRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class CheckoutServiceImpl implements CheckoutService{
 
     private CheckoutRepository checkoutRepository;
@@ -27,7 +29,8 @@ public class CheckoutServiceImpl implements CheckoutService{
             return optionalCheckout.get();
         }
 
-        throw new RuntimeException("there is bo checkout with given id: "+id);
+        log.error("there is no checkout with given id");
+        throw new RuntimeException("there is no checkout with given id: "+id);
 
     }
 

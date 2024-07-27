@@ -14,11 +14,7 @@ import org.springframework.data.domain.Sort;
 
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -78,6 +74,7 @@ public class SaleServiceImpl implements SaleService {
 
         }
         else {
+            log.error("Sale not found !");
             throw new RuntimeException("invalid sale id !");
         }
 
@@ -98,8 +95,6 @@ public class SaleServiceImpl implements SaleService {
 
         List<ProductDTO>entryProducts= getProductsFromEntries(entries);
 
-        //log.info("entryProduct: "+ entryProducts.get(0));
-
         int index=0;
 
         for(Entry entry:entries){
@@ -112,6 +107,7 @@ public class SaleServiceImpl implements SaleService {
 
 
             if (entry.isCampaignActive()){
+                log.debug("adding campaign name to saleResponse");
                 campaignName=entryProduct.getCampaignDTO().getTitle();
             }
 
@@ -125,13 +121,9 @@ public class SaleServiceImpl implements SaleService {
                     .build();
 
 
-
            entryDTOs.add(entryDTO);
 
-
         }
-
-
 
         return SaleResponse.builder()
                 .saleId(sale.getId())
@@ -143,11 +135,12 @@ public class SaleServiceImpl implements SaleService {
                 .entryDTOs(entryDTOs)
                 .change(sale.getTotalReceived()-sale.getCheckout().getTotalPrice())
                 .build();
-
     }
 
     @Override
     public List<SaleResponse> sortSaleByField(String field) {
+
+        log.info("Sorting sales by field: {}", field);
 
         List<Sale>sales;
 
@@ -167,12 +160,14 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public List<SaleResponse> getPaginatedSales(int offset, int pageSize) {
+        log.info("Fetching paginated sales with offset: {} and pageSize: {}", offset, pageSize);
         List<Sale>sales= saleRepository.findAll(PageRequest.of(offset,pageSize)).get().toList();
         return sales.stream().map(this::mapToSaleResponse).toList();
     }
 
     @Override
     public List<SaleResponse> getPaginatedAndSortedSales(int offset, int pageSize, String field) {
+        log.info("Fetching paginated and sorted sales with offset: {}, pageSize: {}, and field: {}", offset, pageSize, field);
         List<Sale>sales= saleRepository.findAll(PageRequest.of(offset,pageSize).withSort(Sort.by(Sort.Direction.ASC,field))).get().toList();
         return sales.stream().map(this::mapToSaleResponse).toList();
 
@@ -185,7 +180,7 @@ public class SaleServiceImpl implements SaleService {
         for (Entry entry:entries){
 
             productIds.add(entry.getProductId());
-
+            log.debug("product with id: {} added.",entry.getProductId());
         }
 
 
@@ -194,29 +189,26 @@ public class SaleServiceImpl implements SaleService {
 
     }
 
-
-
     @Override
     public String addToCheckout(String productTitle) {
 
-
         ProductDTO product=productProxy.getProductByTitle(productTitle);
 
-        log.info(product+" will be added to checkout!");
+        log.info(product.getTitle()+" will be added to checkout!");
 
 
         Checkout checkout=checkoutRepository.findLastCheckout();
 
 
         if (product.getStock()==0){
+            log.error("Product out of stock: {}", productTitle);
             throw new RuntimeException("This product is out of stock !");
         }
 
         boolean isProductAlreadyExist=false;
 
         if (checkout.getEntries()!=null){
-
-            log.info("incrementing quantity of product!");
+            log.debug("Checking if product already exists in checkout");
             //if there is a match this means our product is multiple from now on, so we just increment the quantity of our existing entry
             Optional<Entry>matchedEntry=checkout.getEntries().stream().filter(e -> e.getProductId()==product.getId()).findFirst();
             if (matchedEntry.isPresent()){
@@ -224,20 +216,21 @@ public class SaleServiceImpl implements SaleService {
 
                 entry.setQuantity(entry.getQuantity()+1);
                 isProductAlreadyExist=true;
+
+                log.debug("Incremented quantity to {} for product: {}",entry.getQuantity(),productTitle);
+
             }
         }
 
         //create new related entry if there is no existing already
         if (!isProductAlreadyExist){
 
-            log.info("creating new entry!");
+            log.debug("creating new entry!");
             Entry entry=new Entry();
             entry.setQuantity(1);
             entry.setProductId(product.getId());
             checkout.addEntry(entry);
-
         }
-
 
         List<Entry>entries=checkout.getEntries();
 
@@ -249,15 +242,14 @@ public class SaleServiceImpl implements SaleService {
         for (Entry entry:entries){
 
             ProductDTO entryProduct=entryProducts.get(index);
-
-            System.out.println(entryProducts.get(index));
+            log.debug("retrieved product from entry in addToCheckout: "+ entryProduct.getTitle());
 
             index++;
 
             Optional<CampaignDTO> campaign= Optional.ofNullable(entryProduct.getCampaignDTO());
             if (campaign.isPresent()){
                 CampaignDTO campaign1=entryProduct.getCampaignDTO();
-               // log.info("Campaign: "+campaign1.getTitle());
+
                 if (campaign1.isOneFreeActive()){
                     float percentage= campaign1.getDiscountPercentage();
                     int buyCount= (int)(100/percentage);
@@ -268,12 +260,12 @@ public class SaleServiceImpl implements SaleService {
                         float priceWithCampaign=entryProduct.getPrice()*(entry.getQuantity()-freeCount);
                         entry.setTotalPrice(priceWithCampaign);
                         entry.setCampaignActive(true);
-                        log.info("Enough amount oneFree campaign applied!");
+                        log.info("Enough amount oneFree campaign applied for {}",entryProduct.getTitle());
 
                     }
                     else{
                         entry.setTotalPrice(entryProduct.getPrice());
-                        log.info("Insufficient amount for oneFree campaign being applied!");
+                        log.info("Insufficient amount for oneFree campaign being applied for {}",entryProduct.getTitle());
                     }
 
                 }
@@ -283,7 +275,7 @@ public class SaleServiceImpl implements SaleService {
                     float priceWithCampaign=price*((100-percentage)/100);
                     entry.setTotalPrice(priceWithCampaign);
                     entry.setCampaignActive(true);
-                    log.info("Percentage campaign applied!");
+                    log.info("Percentage campaign applied for {}",entryProduct.getTitle());
 
                 }
 
@@ -292,32 +284,25 @@ public class SaleServiceImpl implements SaleService {
                 float price=entryProduct.getPrice();
                 int quantity=entry.getQuantity();
                 entry.setTotalPrice(price*quantity);
+                log.info("No campaign applied for {}",entryProduct.getTitle());
 
             }
 
         }
-
 
         float checkoutPrice= (float) checkout.getEntries().stream().mapToDouble(Entry::getTotalPrice).sum();
         log.info("totalPrice: {}",checkoutPrice);
 
         checkout.setTotalPrice(checkoutPrice);
 
-
         checkoutRepository.save(checkout);
 
-
-
-
         return "total price: "+ checkoutPrice;
-
-
 
     }
 
     @Override
     public String sell(float totalReceived, String payment, String username) {
-
 
         Checkout checkout=checkoutRepository.findLastCheckout();
 
@@ -326,9 +311,9 @@ public class SaleServiceImpl implements SaleService {
         List<Entry>entries=checkout.getEntries();
 
         if (entries==null){
+            log.error("Checkout is empty, cannot proceed with sale.");
             throw new RuntimeException("Checkout is empty!");
         }
-
 
         float totalPrice=checkout.getTotalPrice();
 
@@ -338,8 +323,9 @@ public class SaleServiceImpl implements SaleService {
 
 
         if (totalPrice>totalReceived) {
+            log.error("Insufficient funds: totalPrice={}, totalReceived={}", totalPrice, totalReceived);
+            throw new RuntimeException("Insufficient funds! Payment cancelled!");
 
-            throw new RuntimeException("insufficient funds ! - Payment cancelled !");
         }
 
 
@@ -347,7 +333,10 @@ public class SaleServiceImpl implements SaleService {
         switch (payment) {
             case "card" -> sale.setPayment(EnumPayment.CARD);
             case "cash" -> sale.setPayment(EnumPayment.CASH);
-            default -> throw new RuntimeException("invalid payment method !");
+            default -> {
+                log.error("Invalid payment method: {}", payment);
+                throw new RuntimeException("Invalid payment method!");
+            }
         }
 
         sale.setDate(new Date());
@@ -361,11 +350,12 @@ public class SaleServiceImpl implements SaleService {
         for(Entry entry:entries){
 
             ProductDTO entryProduct=entryProducts.get(index);
+            log.debug("retrieved product from entry in sell: "+ entryProduct.getTitle());
 
             index++;
 
             entryProduct.setStock(entryProduct.getStock()-entry.getQuantity());
-
+            log.info(entryProduct.getTitle()+" stock decremented to {}",entryProduct.getStock());
         }
 
         //update products in product-service
@@ -398,6 +388,7 @@ public class SaleServiceImpl implements SaleService {
 
         }
         else{
+            log.error("There is no Sale with given id !");
             throw new RuntimeException("There is no Sale with given id: "+saleId);
         }
 
