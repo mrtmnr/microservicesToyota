@@ -191,8 +191,6 @@ class ProductServiceImplTest {
         when(productRepository.findById(id)).thenReturn(Optional.empty());
 
         // when
-
-
         // then
         assertThatThrownBy(()->
                 underTest.getProductById(id))

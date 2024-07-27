@@ -56,6 +56,10 @@ public class AuthController {
     @GetMapping("/listUsers")
     public List<UserResponse> getUsers(@RequestParam Optional<String> keyword){
 
+        if (keyword.isPresent()){
+            log.info("getting users with keyword: {}",keyword);
+        }
+
         return userService.getAllUsers(keyword);
 
     }

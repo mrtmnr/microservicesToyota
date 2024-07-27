@@ -59,7 +59,7 @@ public class AuthServiceImpl implements AuthService{
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword())
         );
 
-        log.info("Sign-in successful !");
+        log.info("Sign-in successful for user: {}", loginRequest.getUsername());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
@@ -75,14 +75,13 @@ public class AuthServiceImpl implements AuthService{
         boolean usernameCheck=true;
         boolean emailCheck=true;
 
-
         if(id.isPresent()){
 
             int userId=id.get();
 
             Optional<User> matchedUser=userRepository.findById(userId);
             if (matchedUser.isPresent()){
-
+                log.debug("Updating existing user with ID: {}", userId);
                 if (signUpRequest.getEmail()==null){
 
                     signUpRequest.setEmail(matchedUser.get().getEmail());
@@ -106,13 +105,12 @@ public class AuthServiceImpl implements AuthService{
                 }
                 if (signUpRequest.getRole()==null){
 
-
                     signUpRequest.setRole(matchedUser.get().getRole().stream().map(r->r.getEnumName().toString()).collect(Collectors.toSet()));
-
                 }
 
             }
             else {
+                log.error("Error: No user found with given ID");
                 throw new RuntimeException("There is no user with given user id !");
             }
         }
@@ -182,6 +180,8 @@ public class AuthServiceImpl implements AuthService{
 
         user.setRole(roles);
         userRepository.save(user);
+
+        log.info("User {} registered/updated successfully.", user.getUsername());
 
         if(id.isPresent()){
             return "User has been updated successfully!";

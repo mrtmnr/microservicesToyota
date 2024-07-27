@@ -40,6 +40,7 @@ public class ReportServiceImpl implements ReportService {
         Document document = new Document(PageSize.A6);
         PdfWriter.getInstance(document, baos);
         document.open();
+        log.info("PDF document opened");
 
         Paragraph title = new Paragraph("Receipt");
         title.setAlignment(Element.ALIGN_CENTER);
@@ -50,22 +51,21 @@ public class ReportServiceImpl implements ReportService {
         document.add(new Paragraph("Cashier: "+sale.getCashierName()));
         document.add(new Paragraph("Date:"+ sale.getDate()));
         document.add(new Paragraph("\n"));
-
+        log.info("Added sale details to PDF");
 
 
         for (EntryDTO entry: sale.getEntryDTOs()){
 
             document.add(new Paragraph(" - Product: "+entry.getProductName()+" | Quantity: "+entry.getQuantity()+" | Price: "+entry.getProductPrice()));
-
+            log.debug("Added entry details to PDF for product: {}", entry.getProductName());
 
 
             if (entry.isCampaignActive()){
                 //document.add(new Paragraph("Applied Campaigns:"));
 
                 document.add(new Paragraph(entry.getCampaignName()+ " | Discount: -"+(entry.getProductPrice()*entry.getQuantity()-entry.getTotalPrice())));
-
+                log.debug("Added campaign details for product: {}", entry.getProductName());
             }
-
 
         }
 
@@ -88,7 +88,6 @@ public class ReportServiceImpl implements ReportService {
         headers.setContentLength(baos.size());
 
         return new ResponseEntity<>(baos.toByteArray(), headers, HttpStatus.OK);
-
 
     }
 }

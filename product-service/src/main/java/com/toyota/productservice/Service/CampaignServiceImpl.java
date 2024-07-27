@@ -35,7 +35,6 @@ public class CampaignServiceImpl implements CampaignService{
 
             log.error("campaign is not found");
             throw new RuntimeException("campaign is not found with id " + id);
-
         }
 
         return result;

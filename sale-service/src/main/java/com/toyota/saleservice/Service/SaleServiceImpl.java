@@ -154,6 +154,7 @@ public class SaleServiceImpl implements SaleService {
             sales= saleRepository.findAll(Sort.by(Sort.Direction.ASC,field));
         }
 
+        log.debug("Sorted {} sales by field: {}", sales.size(), field);
 
         return sales.stream().map(this::mapToSaleResponse).toList();
     }
@@ -162,6 +163,7 @@ public class SaleServiceImpl implements SaleService {
     public List<SaleResponse> getPaginatedSales(int offset, int pageSize) {
         log.info("Fetching paginated sales with offset: {} and pageSize: {}", offset, pageSize);
         List<Sale>sales= saleRepository.findAll(PageRequest.of(offset,pageSize)).get().toList();
+        log.debug("Fetched {} sales for pagination.", sales.size());
         return sales.stream().map(this::mapToSaleResponse).toList();
     }
 
@@ -169,6 +171,7 @@ public class SaleServiceImpl implements SaleService {
     public List<SaleResponse> getPaginatedAndSortedSales(int offset, int pageSize, String field) {
         log.info("Fetching paginated and sorted sales with offset: {}, pageSize: {}, and field: {}", offset, pageSize, field);
         List<Sale>sales= saleRepository.findAll(PageRequest.of(offset,pageSize).withSort(Sort.by(Sort.Direction.ASC,field))).get().toList();
+        log.debug("Fetched {} sales for pagination and sorting.", sales.size());
         return sales.stream().map(this::mapToSaleResponse).toList();
 
     }

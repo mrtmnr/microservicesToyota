@@ -41,7 +41,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     @Override
     public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
-            //log.info("path of the request received -> {}",exchange.getRequest().getPath());
+            log.info("path of the request received -> {}",exchange.getRequest().getPath());
             if (validator.isSecured.test(exchange.getRequest())) {
                 //header contains token or not
                 if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
@@ -59,11 +59,9 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     return handleUnauthorized(exchange, "Invalid JWT Token");
                 }
 
-
                 //log.info("requiredRolesForServices: {}" , auth.requiredRolesForServices);
 
-
-                log.info("token validated !");
+                log.info("Token validated successfully!");
 
                 List<String> userRoles = jwtUtil.getRoles(authHeader);
 
@@ -84,6 +82,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                         boolean hasRequiredRole = userRoles.stream().anyMatch(requiredRoles::contains);
 
                         if (!hasRequiredRole) {
+                            log.error("User does not have the required role for path: {}", path);
                             throw new RuntimeException("User does not have the required role");
                         }
 
@@ -102,7 +101,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             return chain.filter(exchange);
         });
     }
-
 
     private Mono<Void> handleUnauthorized(ServerWebExchange exchange, String message) {
         log.error("Unauthorized access: {}", message);
@@ -123,12 +121,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         map.put("/report/",List.of("MANAGER"));
         map.put("/manage/",List.of("ADMIN"));
 
-
-
        return map;
     }
-
-
 
 
     public static class Config {

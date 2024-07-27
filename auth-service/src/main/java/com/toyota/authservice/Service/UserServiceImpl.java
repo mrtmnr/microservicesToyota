@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
             return "User has been deleted successfully.";
         }
-
+        log.error("Error: User not found with id");
         return "Error: user not found with given id.";
 
     }
@@ -48,8 +48,8 @@ public class UserServiceImpl implements UserService {
             userList= userRepository.filter(keyword.get());
         }
         else{
+            log.debug("Fetching all users without filter.");
             userList=userRepository.findAll();
-
         }
 
         return userList.stream().map(this::mapToUserResponse).toList();
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
 
     public UserResponse mapToUserResponse(User user) {
-
+        log.debug("Mapping user to UserResponse: {}", user.getUsername());
        return UserResponse.builder()
                 .id(user.getId())
                 .roles(user.getRole().stream().map(role -> role.getEnumName().getRole()).toList())
@@ -69,20 +69,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponse> sortUserByField(String field) {
+        log.info("Sorting users by field: {}", field);
         List<User>users= userRepository.findAll(Sort.by(Sort.Direction.ASC,field));
+        log.debug("Sorted {} users by field: {}", users.size(), field);
         return users.stream().map(this::mapToUserResponse).toList();
     }
 
     @Override
     public List<UserResponse> getPaginatedUsers(int offset, int pageSize) {
+        log.info("Fetching paginated users. Offset: {}, PageSize: {}", offset, pageSize);
         List<User>users=userRepository.findAll(PageRequest.of(offset,pageSize)).get().toList();
+        log.debug("Fetched {} users for pagination.", users.size());
         return users.stream().map(this::mapToUserResponse).toList();
     }
 
 
     public List<UserResponse>getPaginatedAndSortedUsers(int offset,int pageSize,String field){
-
+        log.info("Fetching paginated and sorted users. Offset: {}, PageSize: {}, Field: {}", offset, pageSize, field);
         List<User>users=userRepository.findAll(PageRequest.of(offset,pageSize).withSort(Sort.by(Sort.Direction.ASC,field))).get().toList();
+        log.debug("Fetched {} users for pagination and sorting.", users.size());
         return users.stream().map(this::mapToUserResponse).toList();
 
     }

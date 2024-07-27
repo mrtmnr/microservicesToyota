@@ -108,7 +108,6 @@ public class ProductServiceImpl implements ProductService {
             product= result.get();
         }
         else {
-
             //we didn't find the product
             log.error("Product retrieval failed. Product not found with title: {}", title);
             throw new RuntimeException("product was not found by title: "+title);
@@ -138,7 +137,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> sortProductByField(String field) {
+    public List<Product> sortProductByField(String field){
         return productRepository.findAll(Sort.by(Sort.Direction.ASC,field));
     }
 
