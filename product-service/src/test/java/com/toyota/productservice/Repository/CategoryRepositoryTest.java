@@ -19,7 +19,7 @@ class CategoryRepositoryTest {
 
         //given
         String title="title";
-        Category category=new Category("categoryTitle");
+        Category category=new Category(title);
 
         underTest.save(category);
 

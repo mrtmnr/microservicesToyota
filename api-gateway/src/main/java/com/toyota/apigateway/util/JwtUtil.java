@@ -3,11 +3,12 @@ package com.toyota.apigateway.util;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
+@Configuration
 @Slf4j
 public class JwtUtil {
     @Value("${sau.app.jwtSecret}")
