@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  product:
+    image: product-service
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/toyota_m3
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: tulli2019
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    platform: linux/amd64
+    environment:
+      POSTGRES_DB: toyota_m3
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: tulli2019
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+
+volumes:
+  pgdata:
