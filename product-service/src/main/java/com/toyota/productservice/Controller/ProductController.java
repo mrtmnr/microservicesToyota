@@ -1,6 +1,5 @@
 package com.toyota.productservice.Controller;
 
-
 import com.toyota.productservice.DTOs.ProductRequest;
 import com.toyota.productservice.DTOs.ProductResponse;
 import com.toyota.productservice.DTOs.ProductDTO;
@@ -96,7 +95,6 @@ public class ProductController {
 
     }
 
-
     @GetMapping("/getByTitle/{title}")
     public ProductDTO getProductByTitle(@PathVariable String title){
 
@@ -109,7 +107,6 @@ public class ProductController {
         return productService.getProductListByIds(productIds);
 
     }
-
 
 
 

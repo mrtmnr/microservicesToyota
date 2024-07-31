@@ -61,13 +61,11 @@ class SaleRepositoryTest {
         assert (stringPrice.contains(price));
 
     }
-
-
     @Test
     void testFilterSaleByDate(){
 
         //given
-        String day="13";
+        String day="05";
 
         //when
         List<Sale> saleList=saleRepository.filter(day);
@@ -80,7 +78,6 @@ class SaleRepositoryTest {
         assert (stringDate.contains(day));
 
     }
-
     @Test
     void testFilterSaleByPayment(){
 
@@ -142,12 +139,6 @@ class SaleRepositoryTest {
         assertThat(sales.get(0).getCheckout().getTotalPrice()).isEqualTo(100f);
         assertThat(sales.get(1).getCheckout().getTotalPrice()).isEqualTo(103f);
         assertThat(sales.get(2).getCheckout().getTotalPrice()).isEqualTo(192.0f);
-
-
-
-
-
-
 
 
     }

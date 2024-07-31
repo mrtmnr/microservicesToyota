@@ -445,7 +445,7 @@ class SaleServiceImplTest {
         assertThatThrownBy(()->
                 underTest.sell(totalReceived,payment,username))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage("insufficient funds ! - Payment cancelled !");
+                .hasMessage("Insufficient funds! Payment cancelled!");
 
 
         verify(productProxy,never()).updateStock(anyList());
@@ -478,7 +478,7 @@ class SaleServiceImplTest {
         assertThatThrownBy(()->
                 underTest.sell(totalReceived,payment,username))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage("invalid payment method !");
+                .hasMessage("Invalid payment method!");
 
 
         verify(productProxy,never()).updateStock(anyList());

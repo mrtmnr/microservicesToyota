@@ -50,7 +50,7 @@ class CheckoutServiceImplTest {
         assertThatThrownBy(()->
                 underTest.findById(id))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage("there is bo checkout with given id: "+id);
+                .hasMessage("there is no checkout with given id: "+id);
 
     }
 

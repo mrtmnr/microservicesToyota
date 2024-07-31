@@ -42,6 +42,21 @@ services:
       - db
       - naming
 
+  sale:
+    image: sale-service
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/toyota_m3
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: tulli2019
+    depends_on:
+      - db
+      - naming
 
   api-gateway:
     image: gateway-service
