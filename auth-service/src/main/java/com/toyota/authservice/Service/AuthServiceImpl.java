@@ -54,6 +54,13 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
 
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword())
+            );
+        }catch (Exception exception){
+            log.warn("invalid sign-in infos !");
+        }
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword())

@@ -26,7 +26,57 @@ services:
     ports:
       - "8761:8761"
 
+  auth:
+    image: auth-service
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/toyota_m3
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: tulli2019
+    depends_on:
+      - db
+      - naming
 
+
+  api-gateway:
+    image: gateway-service
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8765:8765"
+    depends_on:
+      - naming
+
+
+  report:
+    image: report-service
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    depends_on:
+      - naming
+
+
+  management:
+    image: management-service
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8084"
+    depends_on:
+      - naming
 
 
   db:
