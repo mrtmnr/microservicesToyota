@@ -36,12 +36,23 @@ public class ProductServiceImpl implements ProductService {
         this.campaignRepository = campaignRepository;
     }
 
+    /**
+     * Finds all products.
+     *
+     * @return a list of all products
+     */
     @Override
     public List<Product> findAll() {
         return productRepository.findAll();
     }
 
-
+    /**
+     * Retrieves a product by its ID.
+     *
+     * @param id the ID of the product
+     * @return the product DTO containing product details
+     * @throws RuntimeException if the product is not found
+     */
     @Override
     public ProductDTO getProductById(int id) {
         log.info("Fetching product with id: {}", id);
@@ -56,6 +67,14 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+
+    /**
+     * Retrieves a list of products by their IDs.
+     *
+     * @param productIds the list of product IDs
+     * @return a list of product DTOs containing product details
+     * @throws RuntimeException if any product is not found
+     */
     @Override
     public List<ProductDTO> getProductListByIds(List<Integer> productIds){
 
@@ -82,6 +101,12 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+    /**
+     * Updates the stock of multiple products.
+     *
+     * @param products the list of products with updated stock information
+     * @throws RuntimeException if any product is not found
+     */
     @Override
     public void updateStock(List<ProductResponse> products) {
         log.info("Updating stock for products: {}", products.stream().map(ProductResponse::getTitle));
@@ -97,6 +122,13 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    /**
+     * Retrieves a product by its title.
+     *
+     * @param title the title of the product
+     * @return the product DTO containing product details
+     * @throws RuntimeException if the product is not found
+     */
     @Override
     public ProductDTO getProductByTitle(String title) {
         log.info("Fetching product with title: {}", title);
@@ -117,12 +149,24 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+    /**
+     * Saves a new product or updates an existing product.
+     *
+     * @param product the product entity to save
+     */
     @Override
     public void save(Product product) {
         log.info("Saving product: {}", product);
         productRepository.save(product);
     }
 
+    /**
+     * Deletes a product by its ID.
+     *
+     * @param id the ID of the product to delete
+     * @return a message indicating the result of the deletion
+     * @throws RuntimeException if the product is not found
+     */
     @Override
     public String deleteById(int id) {
         log.info("Deleting product with id: {}", id);
@@ -135,18 +179,39 @@ public class ProductServiceImpl implements ProductService {
         return "product with id "+id+" is deleted successfully.";
 
     }
-
+    /**
+     * Sorts products by a specified field.
+     *
+     * @param field the field to sort by
+     * @return a list of sorted products
+     */
     @Override
     public List<Product> sortProductByField(String field){
         return productRepository.findAll(Sort.by(Sort.Direction.ASC,field));
     }
 
+
+    /**
+     * Retrieves paginated products.
+     *
+     * @param offset the offset to start pagination
+     * @param pageSize the number of products per page
+     * @return a list of paginated products
+     */
     @Override
     public List<Product> getPaginatedProducts(int offset, int pageSize) {
         return productRepository.findAll(PageRequest.of(offset,pageSize)).get().toList();
     }
 
 
+    /**
+     * Retrieves paginated and sorted products.
+     *
+     * @param offset the offset to start pagination
+     * @param pageSize the number of products per page
+     * @param field the field to sort by
+     * @return a list of paginated and sorted products
+     */
 
     @Override
     public List<Product>getPaginatedAndSortedProducts(int offset,int pageSize,String field){
@@ -155,6 +220,13 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+
+    /**
+     * Retrieves all product responses, optionally filtered by a keyword.
+     *
+     * @param keyword an optional keyword for filtering products
+     * @return a list of product responses
+     */
     @Override
     public List<ProductResponse> findAllResponses(Optional<String> keyword) {
 
@@ -171,6 +243,13 @@ public class ProductServiceImpl implements ProductService {
         return productList.stream().map(this::mapToProductResponse).toList();
 
     }
+    /**
+     * Adds a new product based on the provided product request.
+     *
+     * @param productRequest the request containing product details
+     * @return a message indicating the result of the operation
+     * @throws RuntimeException if the category or campaign is invalid
+     */
 
     @Override
     public String addProduct(ProductRequest productRequest) {
@@ -207,6 +286,12 @@ public class ProductServiceImpl implements ProductService {
 
 
 
+    /**
+     * Maps a Product entity to a ProductResponse DTO.
+     *
+     * @param product the product entity
+     * @return the product response DTO
+     */
 
 
     public ProductResponse mapToProductResponse(Product product) {
@@ -229,6 +314,12 @@ public class ProductServiceImpl implements ProductService {
                 .build();
     }
 
+    /**
+     * Maps a Product entity to a ProductDTO.
+     *
+     * @param product the product entity
+     * @return the product DTO
+     */
 
     public ProductDTO mapToProductDTO(Product product) {
 

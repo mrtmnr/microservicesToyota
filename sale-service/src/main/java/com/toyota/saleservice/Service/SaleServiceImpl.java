@@ -34,15 +34,32 @@ public class SaleServiceImpl implements SaleService {
         this.checkoutRepository = checkoutRepository;
     }
 
+    /**
+     * Saves a sale.
+     *
+     * @param sale the sale entity to save
+     */
 
     public void save(Sale sale) {
         saleRepository.save(sale);
     }
 
+    /**
+     * Finds all sales.
+     *
+     * @return a list of all sales
+     */
     @Override
     public List<Sale> findAll() {
         return saleRepository.findAll();
     }
+
+    /**
+     * Retrieves all sale responses, optionally filtered by a keyword.
+     *
+     * @param keyword an optional keyword for filtering sales
+     * @return a list of sale responses
+     */
 
     @Override
     public List<SaleResponse> findAllResponses(Optional<String> keyword) {
@@ -61,6 +78,13 @@ public class SaleServiceImpl implements SaleService {
 
     }
 
+    /**
+     * Retrieves a sale by its ID.
+     *
+     * @param id the ID of the sale
+     * @return the sale entity
+     * @throws RuntimeException if the sale is not found
+     */
     @Override
     public Sale findById(int id) {
 
@@ -82,8 +106,12 @@ public class SaleServiceImpl implements SaleService {
     }
 
 
-
-
+    /**
+     * Maps a Sale entity to a SaleResponse DTO.
+     *
+     * @param sale the sale entity
+     * @return the sale response DTO
+     */
     @Override
     public SaleResponse mapToSaleResponse(Sale sale) {
 
@@ -137,6 +165,12 @@ public class SaleServiceImpl implements SaleService {
                 .build();
     }
 
+    /**
+     * Sorts sales by a specified field.
+     *
+     * @param field the field to sort by
+     * @return a list of sorted sales
+     */
     @Override
     public List<SaleResponse> sortSaleByField(String field) {
 
@@ -159,6 +193,13 @@ public class SaleServiceImpl implements SaleService {
         return sales.stream().map(this::mapToSaleResponse).toList();
     }
 
+    /**
+     * Retrieves paginated sales.
+     *
+     * @param offset the offset to start pagination
+     * @param pageSize the number of sales per page
+     * @return a list of paginated sales
+     */
     @Override
     public List<SaleResponse> getPaginatedSales(int offset, int pageSize) {
         log.info("Fetching paginated sales with offset: {} and pageSize: {}", offset, pageSize);
@@ -167,6 +208,14 @@ public class SaleServiceImpl implements SaleService {
         return sales.stream().map(this::mapToSaleResponse).toList();
     }
 
+    /**
+     * Retrieves paginated and sorted sales.
+     *
+     * @param offset the offset to start pagination
+     * @param pageSize the number of sales per page
+     * @param field the field to sort by
+     * @return a list of paginated and sorted sales
+     */
     @Override
     public List<SaleResponse> getPaginatedAndSortedSales(int offset, int pageSize, String field) {
         log.info("Fetching paginated and sorted sales with offset: {}, pageSize: {}, and field: {}", offset, pageSize, field);
@@ -175,6 +224,13 @@ public class SaleServiceImpl implements SaleService {
         return sales.stream().map(this::mapToSaleResponse).toList();
 
     }
+
+    /**
+     * Retrieves products from a list of entries.
+     *
+     * @param entries the list of entries
+     * @return a list of product DTOs
+     */
 
     public List<ProductDTO>getProductsFromEntries(List<Entry>entries){
 
@@ -191,6 +247,14 @@ public class SaleServiceImpl implements SaleService {
 
 
     }
+
+    /**
+     * Adds a product to the checkout by its title.
+     *
+     * @param productTitle the title of the product to add
+     * @return a message indicating the total price of the checkout
+     * @throws RuntimeException if the product is out of stock
+     */
 
     @Override
     public String addToCheckout(String productTitle) {
@@ -304,6 +368,16 @@ public class SaleServiceImpl implements SaleService {
 
     }
 
+    /**
+     * Finalizes a sale with the given payment details.
+     *
+     * @param totalReceived the total amount received from the customer
+     * @param payment the payment method (card or cash)
+     * @param username the username of the cashier or user making the sale
+     * @return a message indicating the sale has been saved
+     * @throws RuntimeException if the checkout is empty or there are insufficient funds
+     */
+
     @Override
     public String sell(float totalReceived, String payment, String username) {
 
@@ -377,6 +451,14 @@ public class SaleServiceImpl implements SaleService {
 
         return "sale has been saved - "+ sale;
     }
+
+    /**
+     * Retrieves a sale response by sale ID.
+     *
+     * @param saleId the ID of the sale
+     * @return the sale response DTO
+     * @throws RuntimeException if the sale is not found
+     */
 
     @Override
     public SaleResponse getSaleResponseBySaleId(int saleId) {

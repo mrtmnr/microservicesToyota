@@ -19,6 +19,13 @@ public  class CategoryServiceImpl implements CategoryService{
         this.categoryRepository = categoryRepository;
     }
 
+    /**
+     * Retrieves a category by its title.
+     *
+     * @param title the title of the category
+     * @return the category entity
+     * @throws RuntimeException if the category is not found
+     */
     @Override
     public Category findByTitle(String title) {
 

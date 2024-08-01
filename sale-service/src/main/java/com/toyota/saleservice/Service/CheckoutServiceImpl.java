@@ -21,6 +21,13 @@ public class CheckoutServiceImpl implements CheckoutService{
     }
 
 
+    /**
+     * Retrieves a checkout by its ID.
+     *
+     * @param id the ID of the checkout
+     * @return the Checkout entity
+     * @throws RuntimeException if the checkout is not found
+     */
     @Override
     public Checkout findById(int id) {
         Optional<Checkout>optionalCheckout= checkoutRepository.findById(id);
@@ -34,16 +41,31 @@ public class CheckoutServiceImpl implements CheckoutService{
 
     }
 
+    /**
+     * Retrieves the last checkout from the repository.
+     *
+     * @return the last Checkout entity
+     */
     @Override
     public Checkout getLastCheckout() {
         return checkoutRepository.findLastCheckout();
     }
 
+    /**
+     * Saves the given checkout to the repository.
+     *
+     * @param checkout the Checkout entity to be saved
+     */
     @Override
     public void save(Checkout checkout) {
         checkoutRepository.save(checkout);
     }
 
+    /**
+     * Deletes a checkout by its ID.
+     *
+     * @param id the ID of the checkout to be deleted
+     */
     @Override
     public void deleteById(int id) {
         checkoutRepository.deleteById(id);

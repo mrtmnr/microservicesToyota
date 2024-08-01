@@ -20,6 +20,13 @@ public class CampaignServiceImpl implements CampaignService{
         this.campaignRepository = campaignRepository;
     }
 
+    /**
+     * Retrieves a campaign by its ID.
+     *
+     * @param id the ID of the campaign
+     * @return the campaign entity
+     * @throws RuntimeException if the campaign is not found
+     */
     @Override
     public Campaign findById(int id) {
 
