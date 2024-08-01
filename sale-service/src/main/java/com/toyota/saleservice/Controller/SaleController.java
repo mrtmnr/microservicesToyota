@@ -1,17 +1,12 @@
 package com.toyota.saleservice.Controller;
 
-import com.toyota.saleservice.DTOs.ProductDTO;
 import com.toyota.saleservice.DTOs.SaleResponse;
-import com.toyota.saleservice.Feign.ProductProxy;
-import com.toyota.saleservice.Service.CheckoutService;
 import com.toyota.saleservice.Service.SaleService;
-import com.toyota.saleservice.Service.SaleServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +22,7 @@ public class SaleController {
 
 
     @Autowired
-    public SaleController(CheckoutService checkoutService, SaleService saleService) {
+    public SaleController(SaleService saleService) {
         this.saleService = saleService;
 
     }
@@ -35,9 +30,7 @@ public class SaleController {
     @PostMapping("/addToCheckout/{productName}")
     public String  addToCheckout(@PathVariable String productName){
 
-
         return saleService.addToCheckout(productName);
-
     }
 
 
@@ -70,13 +63,6 @@ public class SaleController {
     }
 
 
-/*
-
-    @DeleteMapping("/delete/{id}")
-    public String deleteSale(@PathVariable int id){
-        return saleService.deleteById(id);
-    }
-*/
 
     @GetMapping("/sort/{field}")
     public List<SaleResponse>sortSales(@PathVariable String field){

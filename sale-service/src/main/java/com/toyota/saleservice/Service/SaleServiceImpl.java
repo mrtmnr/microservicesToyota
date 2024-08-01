@@ -174,7 +174,7 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public List<SaleResponse> sortSaleByField(String field) {
 
-        log.info("Sorting sales by field: {}", field);
+
 
         List<Sale>sales;
 
@@ -401,7 +401,9 @@ public class SaleServiceImpl implements SaleService {
 
         if (totalPrice>totalReceived) {
             log.error("Insufficient funds: totalPrice={}, totalReceived={}", totalPrice, totalReceived);
-            throw new RuntimeException("Insufficient funds! Payment cancelled!");
+            //throw new RuntimeException("Insufficient funds! Payment cancelled!");
+            return "Insufficient funds! totalPrice: "+totalPrice+" totalReceived: "+totalReceived;
+
 
         }
 

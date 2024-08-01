@@ -422,13 +422,16 @@ class SaleServiceImplTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenInsufficientFunds() {
+    void shouldNotSellWhenInsufficientFunds() {
 
         float totalReceived=100;
+        float totalPrice=200;
         String payment="cash";
         String username="mert";
 
-        Checkout checkout=new Checkout(200);
+
+
+        Checkout checkout=new Checkout(totalPrice);
 
         Entry entry1=new Entry(3,120,true);
         Entry entry2=new Entry(1,104,false);
@@ -440,12 +443,11 @@ class SaleServiceImplTest {
 
 
         when(checkoutRepository.findLastCheckout()).thenReturn(checkout);
-        //whe
+        //when
 
-        assertThatThrownBy(()->
-                underTest.sell(totalReceived,payment,username))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Insufficient funds! Payment cancelled!");
+        String message=underTest.sell(totalReceived,payment,username);
+
+       assertThat(message).isEqualTo("Insufficient funds! totalPrice: "+totalPrice+" totalReceived: "+totalReceived);
 
 
         verify(productProxy,never()).updateStock(anyList());
