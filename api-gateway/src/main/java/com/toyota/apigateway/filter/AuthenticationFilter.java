@@ -68,14 +68,12 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 String path = exchange.getRequest().getPath().toString();
 
 
-                //let the product path pass without checking authorization
+                // let the product path pass without checking authorization
                 if (!(path.startsWith("/product/"))){
 
                     Optional<Map.Entry<String, List<String>>> requiredRolesEntry = requiredRolesForServices().entrySet().stream()
                             .filter(entry -> path.startsWith(entry.getKey()))
                             .findFirst();
-
-                   // System.out.println(requiredRolesForServices().entrySet().stream().);
 
                     if (requiredRolesEntry.isPresent()) {
                         List<String> requiredRoles = requiredRolesEntry.get().getValue();

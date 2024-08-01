@@ -373,7 +373,7 @@ public class SaleServiceImpl implements SaleService {
      *
      * @param totalReceived the total amount received from the customer
      * @param payment the payment method (card or cash)
-     * @param username the username of the cashier or user making the sale
+     * @param username the username of the cashier
      * @return a message indicating the sale has been saved
      * @throws RuntimeException if the checkout is empty or there are insufficient funds
      */

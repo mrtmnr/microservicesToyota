@@ -26,7 +26,7 @@ public class CheckoutServiceImpl implements CheckoutService{
      *
      * @param id the ID of the checkout
      * @return the Checkout entity
-     * @throws RuntimeException if the checkout is not found
+     * @throws RuntimeException if the checkout is not found.
      */
     @Override
     public Checkout findById(int id) {
