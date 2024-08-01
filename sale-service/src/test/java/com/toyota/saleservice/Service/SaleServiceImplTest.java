@@ -490,27 +490,8 @@ class SaleServiceImplTest {
     }
 
 
-
     @Test
-    @Disabled
-    void sortSaleByField() {
-
-
-    }
-
-    @Test
-    @Disabled
-    void getPaginatedSales() {
-    }
-
-    @Test
-    @Disabled
-    void getPaginatedAndSortedSales() {
-    }
-
-    @Test
-
-    void returnSaleResponseBySaleId(){
+    void shouldReturnSaleResponseBySaleId(){
         //given
         int saleId=1;
 
