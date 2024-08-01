@@ -22,6 +22,12 @@ public class ManagementServiceImpl implements ManagementService{
         this.authProxy = authProxy;
     }
 
+    /**
+     * Adds a new user with the provided signup request.
+     *
+     * @param signupRequest the request containing user details for registration
+     * @return a ResponseEntity indicating the result of the user registration
+     */
     @Override
     public ResponseEntity<?> addUser(SignupRequest signupRequest) {
         log.info("Adding new user: {}", signupRequest.getUsername());
@@ -46,6 +52,13 @@ public class ManagementServiceImpl implements ManagementService{
 
     }
 
+    /**
+     * Updates an existing user with the provided signup request and user ID.
+     *
+     * @param signupRequest the request containing updated user details
+     * @param id the ID of the user to be updated
+     * @return a ResponseEntity indicating the result of the user update
+     */
     @Override
     public ResponseEntity<?> updateUser(SignupRequest signupRequest, int id){
 
@@ -66,6 +79,12 @@ public class ManagementServiceImpl implements ManagementService{
 
     }
 
+    /**
+     * Deletes a user by their ID.
+     *
+     * @param id the ID of the user to be deleted
+     * @return a ResponseEntity indicating the result of the user deletion
+     */
     @Override
     public ResponseEntity<?> deleteUserById(int id) {
 
@@ -82,16 +101,36 @@ public class ManagementServiceImpl implements ManagementService{
 
     }
 
+    /**
+     * Retrieves all users, optionally filtered by a keyword.
+     *
+     * @param keyword an optional keyword for filtering users
+     * @return a list of UserResponse objects representing the users
+     */
     @Override
     public List<UserResponse> getAllUsers(Optional<String> keyword) {
         return authProxy.getUsers(keyword);
     }
 
+    /**
+     * Retrieves all users sorted by the specified field.
+     *
+     * @param field the field by which to sort the users
+     * @return a list of UserResponse objects representing the sorted users
+     */
     @Override
     public List<UserResponse> sortUserByField(String field) {
         log.info("Sorting users by field: {}", field);
         return authProxy.sortUserByField(field);
     }
+
+    /**
+     * Retrieves paginated users with the specified offset and page size.
+     *
+     * @param offset the offset from which to start retrieving users
+     * @param pageSize the number of users to retrieve
+     * @return a list of UserResponse objects representing the paginated users
+     */
 
     @Override
     public List<UserResponse> getPaginatedUsers(int offset, int pageSize) {
@@ -99,6 +138,14 @@ public class ManagementServiceImpl implements ManagementService{
         return authProxy.getPaginatedUsers(offset,pageSize);
     }
 
+    /**
+     * Retrieves paginated and sorted users with the specified offset, page size, and sorting field.
+     *
+     * @param offset the offset from which to start retrieving users
+     * @param pageSize the number of users to retrieve
+     * @param field the field by which to sort the users
+     * @return a list of UserResponse objects representing the paginated and sorted users
+     */
     @Override
     public List<UserResponse> getPaginatedAndSortedUsers(int offset, int pageSize, String field) {
         log.info("Fetching paginated and sorted users. Offset: {}, PageSize: {}, Field: {}", offset, pageSize, field);
