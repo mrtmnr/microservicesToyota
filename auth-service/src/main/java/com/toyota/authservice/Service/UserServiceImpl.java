@@ -23,7 +23,13 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
+    /**
+     * Deletes a user by their ID.
+     *
+     * @param id the ID of the user to delete
+     * @return a message indicating the result of the operation
+     * @throws RuntimeException if the user with the given ID is not found
+     */
     @Override
     public String deleteUserById(int id) {
 
@@ -38,6 +44,12 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    /**
+     * Retrieves all users, optionally filtering by a keyword.
+     *
+     * @param keyword an optional keyword for filtering users
+     * @return a list of UserResponse objects representing the users
+     */
 
     @Override
     public List<UserResponse> getAllUsers(Optional<String> keyword) {
@@ -55,6 +67,12 @@ public class UserServiceImpl implements UserService {
         return userList.stream().map(this::mapToUserResponse).toList();
     }
 
+    /**
+     * Maps a User entity to a UserResponse DTO.
+     *
+     * @param user the user entity to map
+     * @return the mapped UserResponse object
+     */
 
     public UserResponse mapToUserResponse(User user) {
         log.debug("Mapping user to UserResponse: {}", user.getUsername());
@@ -66,6 +84,12 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    /**
+     * Sorts users by a specified field.
+     *
+     * @param field the field to sort by
+     * @return a list of UserResponse objects representing the sorted users
+     */
 
     @Override
     public List<UserResponse> sortUserByField(String field) {
@@ -75,6 +99,13 @@ public class UserServiceImpl implements UserService {
         return users.stream().map(this::mapToUserResponse).toList();
     }
 
+    /**
+     * Retrieves a paginated list of users.
+     *
+     * @param offset   the offset (page number)
+     * @param pageSize the number of users per page
+     * @return a list of UserResponse objects representing the paginated users
+     */
     @Override
     public List<UserResponse> getPaginatedUsers(int offset, int pageSize) {
         log.info("Fetching paginated users. Offset: {}, PageSize: {}", offset, pageSize);
@@ -83,6 +114,14 @@ public class UserServiceImpl implements UserService {
         return users.stream().map(this::mapToUserResponse).toList();
     }
 
+    /**
+     * Retrieves a paginated and sorted list of users.
+     *
+     * @param offset   the offset (page number)
+     * @param pageSize the number of users per page
+     * @param field    the field to sort by
+     * @return a list of UserResponse objects representing the paginated and sorted users
+     */
 
     public List<UserResponse>getPaginatedAndSortedUsers(int offset,int pageSize,String field){
         log.info("Fetching paginated and sorted users. Offset: {}, PageSize: {}, Field: {}", offset, pageSize, field);

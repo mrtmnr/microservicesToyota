@@ -51,6 +51,13 @@ public class AuthServiceImpl implements AuthService{
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Authenticates a user using the provided login request.
+     *
+     * @param loginRequest the login request containing username and password
+     * @return a ResponseEntity containing the JWT response
+     * @throws RuntimeException if authentication fails
+     */
     @Override
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
 
@@ -76,6 +83,14 @@ public class AuthServiceImpl implements AuthService{
         return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles));
     }
 
+    /**
+     * Registers or updates a user with the provided signup request.
+     *
+     * @param signUpRequest the signup request containing user information
+     * @param id            an optional user ID for updating an existing user
+     * @return a message indicating the result of the operation
+     * @throws RuntimeException if any error occurs during the registration or update process
+     */
     @Override
     public String registerUser(SignupRequest signUpRequest, Optional<Integer> id) {
 
