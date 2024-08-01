@@ -30,6 +30,13 @@ public class ReportServiceImpl implements ReportService {
         this.saleProxy = saleProxy;
     }
 
+    /**
+     * Generates a PDF invoice for a sale by its ID.
+     *
+     * @param saleId the ID of the sale for which the PDF invoice is generated
+     * @return a ResponseEntity containing the PDF invoice as a byte array
+     * @throws DocumentException if there is an error in creating the PDF document
+     */
     @Override
     public ResponseEntity<byte[]> generatePdfById(int saleId) throws DocumentException {
 
