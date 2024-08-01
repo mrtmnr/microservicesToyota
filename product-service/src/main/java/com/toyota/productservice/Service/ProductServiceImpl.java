@@ -183,11 +183,16 @@ public class ProductServiceImpl implements ProductService {
      * Sorts products by a specified field.
      *
      * @param field the field to sort by
-     * @return a list of sorted products
+     * @return a list of sorted productResponses
      */
     @Override
-    public List<Product> sortProductByField(String field){
-        return productRepository.findAll(Sort.by(Sort.Direction.ASC,field));
+    public List<ProductResponse> sortProductByField(String field){
+
+        log.info("Sorting sales by field: {}", field);
+
+        List<Product>products=productRepository.findAll(Sort.by(Sort.Direction.ASC,field));
+
+       return products.stream().map(this::mapToProductResponse).toList();
     }
 
 
@@ -196,11 +201,12 @@ public class ProductServiceImpl implements ProductService {
      *
      * @param offset the offset to start pagination
      * @param pageSize the number of products per page
-     * @return a list of paginated products
+     * @return a list of paginated productResponses
      */
     @Override
-    public List<Product> getPaginatedProducts(int offset, int pageSize) {
-        return productRepository.findAll(PageRequest.of(offset,pageSize)).get().toList();
+    public List<ProductResponse> getPaginatedProducts(int offset, int pageSize) {
+        List<Product>productList=productRepository.findAll(PageRequest.of(offset,pageSize)).get().toList();
+        return productList.stream().map(this::mapToProductResponse).toList();
     }
 
 
@@ -210,13 +216,14 @@ public class ProductServiceImpl implements ProductService {
      * @param offset the offset to start pagination
      * @param pageSize the number of products per page
      * @param field the field to sort by
-     * @return a list of paginated and sorted products
+     * @return a list of paginated and sorted productResponses
      */
 
     @Override
-    public List<Product>getPaginatedAndSortedProducts(int offset,int pageSize,String field){
+    public List<ProductResponse>getPaginatedAndSortedProducts(int offset,int pageSize,String field){
 
-        return productRepository.findAll(PageRequest.of(offset,pageSize).withSort(Sort.by(Sort.Direction.ASC,field))).get().toList();
+        List<Product>productList=productRepository.findAll(PageRequest.of(offset,pageSize).withSort(Sort.by(Sort.Direction.ASC,field))).get().toList();
+        return productList.stream().map(this::mapToProductResponse).toList();
 
     }
 

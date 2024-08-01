@@ -20,7 +20,6 @@ import java.util.*;
 @Slf4j
 public class AuthController {
 
-
     private UserService userService;
 
     private AuthService authService;

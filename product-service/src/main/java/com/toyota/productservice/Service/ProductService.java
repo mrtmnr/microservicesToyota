@@ -22,11 +22,11 @@ public interface ProductService {
 
     String deleteById(int id);
 
-    List<Product> sortProductByField(String field);
+    List<ProductResponse> sortProductByField(String field);
 
-    List<Product> getPaginatedProducts(int offset, int pageSize);
+    List<ProductResponse> getPaginatedProducts(int offset, int pageSize);
 
-    List<Product>getPaginatedAndSortedProducts(int offset,int pageSize,String field);
+    List<ProductResponse>getPaginatedAndSortedProducts(int offset,int pageSize,String field);
 
 
     List<ProductResponse> findAllResponses(Optional<String> keyword);

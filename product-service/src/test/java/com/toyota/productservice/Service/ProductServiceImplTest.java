@@ -486,7 +486,7 @@ class ProductServiceImplTest {
         when(productRepository.findAll(Sort.by(Sort.Direction.ASC, field))).thenReturn(products);
 
         // when
-        List<Product> sortedProducts = underTest.sortProductByField(field);
+        List<ProductResponse> sortedProducts = underTest.sortProductByField(field);
 
         // then
         assertNotNull(sortedProducts);

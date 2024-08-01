@@ -1,5 +1,6 @@
 package com.toyota.productservice.Controller;
 
+
 import com.toyota.productservice.DTOs.ProductRequest;
 import com.toyota.productservice.DTOs.ProductResponse;
 import com.toyota.productservice.DTOs.ProductDTO;
@@ -64,14 +65,14 @@ public class ProductController {
 
 
     @GetMapping("/sort/{field}")
-    public List<Product>sortProducts(@PathVariable String field){
+    public List<ProductResponse>sortProducts(@PathVariable String field){
 
         return productService.sortProductByField(field);
 
     }
 
     @GetMapping("/paginate/{offset}/{pageSize}")
-    public List<Product> paginateProducts(@PathVariable int offset, @PathVariable int pageSize){
+    public List<ProductResponse> paginateProducts(@PathVariable int offset, @PathVariable int pageSize){
 
         return productService.getPaginatedProducts(offset,pageSize);
 
@@ -81,7 +82,7 @@ public class ProductController {
 
 
     @GetMapping("/paginateAndSort/{offset}/{pageSize}/{field}")
-    public List<Product> paginateAndSortProducts(@PathVariable int offset, @PathVariable int pageSize,@PathVariable String field){
+    public List<ProductResponse> paginateAndSortProducts(@PathVariable int offset, @PathVariable int pageSize,@PathVariable String field){
 
         return productService.getPaginatedAndSortedProducts(offset,pageSize,field);
 
@@ -95,6 +96,7 @@ public class ProductController {
 
     }
 
+
     @GetMapping("/getByTitle/{title}")
     public ProductDTO getProductByTitle(@PathVariable String title){
 
@@ -107,6 +109,7 @@ public class ProductController {
         return productService.getProductListByIds(productIds);
 
     }
+
 
 
 
